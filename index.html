@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>ШИК: фокус на 10 млн</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { paper:'#F6F4EF', paperDark:'#ECE9E1', ink:'#111111', inkSoft:'#222222', muted:'#555555', accent:'#007AFF', accentHover:'#0062CC' },
+      fontFamily: { display:['Montserrat','sans-serif'], sans:['Inter','sans-serif'] } } } };
+  </script>
+  <style>
+    /* VOICE: трекер говорит с собственником прямо, как на разборе
+       IDEA: рабочая тетрадь трекинга: бумага, пунктир, синие пометки
+       PICTURE: калькулятор золотых задач как главный рабочий инструмент
+       COLOUR+TYPE: бумага #F6F4EF, чёрный, синий #007AFF; Montserrat + Inter
+       LAYOUT: шесть «слайдов» в одной ленте, как в разборе E-MOTION */
+    body{background-color:#F6F4EF;color:#111;font-family:'Inter',sans-serif;
+      background-image:radial-gradient(rgba(17,17,17,.045) 1px,transparent 0),radial-gradient(rgba(17,17,17,.025) 1px,transparent 0);
+      background-size:28px 28px;background-position:0 0,14px 14px;overflow-x:hidden}
+    *{min-width:0}
+    .font-display-tight{font-family:'Montserrat',sans-serif;letter-spacing:-.04em;line-height:.96}
+    .dashed-card{border:1.5px dashed #555;background-color:rgba(255,255,255,.42);transition:all .25s cubic-bezier(.16,1,.3,1)}
+    .dashed-card:hover{border-color:#111;background-color:rgba(255,255,255,.78)}
+    .nav-pill{display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;white-space:nowrap;border-radius:9999px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid transparent;transition:all .2s ease}
+    .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .btn:focus-visible,input:focus-visible{outline:2px solid #007AFF;outline-offset:2px}
+    .rng{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;--p:50%}
+    .rng::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,#007AFF var(--p),#D4D0C7 var(--p))}
+    .rng::-moz-range-track{height:6px;border-radius:999px;background:linear-gradient(90deg,#007AFF var(--p),#D4D0C7 var(--p))}
+    .rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:6px;background:#fff;border:2px solid #111;margin-top:-8px;transition:transform .15s ease}
+    .rng::-moz-range-thumb{width:18px;height:18px;border-radius:6px;background:#fff;border:2px solid #111}
+    .rng:hover::-webkit-slider-thumb,.rng:active::-webkit-slider-thumb{transform:scale(1.12);background:#007AFF}
+    .ticks{display:flex;justify-content:space-between;padding:0 9px;margin-top:-4px}
+    .ticks span{width:2px;height:6px;background:rgba(17,17,17,.25);border-radius:1px}
+    .gauge-ring{transition:stroke-dashoffset .45s cubic-bezier(.16,1,.3,1),stroke .3s}
+    .toggle{position:relative;width:46px;height:26px;border-radius:999px;background:#D4D0C7;transition:background .2s;flex-shrink:0}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:6px;background:#fff;border:1.5px solid #111;transition:transform .2s}
+    .toggle[aria-checked="true"]{background:#007AFF}.toggle[aria-checked="true"]::after{transform:translateX(20px)}
+    .modal{position:fixed;inset:0;z-index:80;background:rgba(17,17,17,.55);display:none;align-items:flex-start;justify-content:center;padding:6vh 14px;overflow-y:auto}
+    .modal.open{display:flex}
+    .tr-ov{position:fixed;inset:0;z-index:90;background:#F6F4EF;overflow-y:auto;display:none;background-image:radial-gradient(rgba(17,17,17,.045) 1px,transparent 0);background-size:28px 28px}
+    .tr-ov.open{display:block}
+    .tr-bar{position:sticky;top:0;background:rgba(246,244,239,.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(17,17,17,.15);display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px max(20px,calc(50% - 390px))}
+    .tr-back{font:800 11px Montserrat,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:#111;border:1px solid rgba(17,17,17,.25);background:#fff;border-radius:999px;padding:10px 14px;white-space:nowrap}
+    .tr-back:hover{background:#111;color:#fff}
+    #tr-q{flex:1 1 200px;font:16px Inter,sans-serif;padding:9px 14px;border-radius:999px;border:1.5px dashed #555;background:rgba(255,255,255,.7)}
+    #tr-cnt{font-size:13px;color:#555;white-space:nowrap}
+    .tr-main{max-width:820px;margin:auto;padding:36px 20px 80px;line-height:1.7}
+    .tr-note{border:1.5px dashed #555;background:rgba(255,255,255,.5);border-radius:16px;padding:14px 18px;font-size:14px;color:#333;margin:0 0 32px}
+    .para{display:grid;grid-template-columns:44px 1fr;gap:6px;margin:0 0 22px}
+    .pn{font:800 12px Montserrat,sans-serif;color:#999;padding-top:5px}
+    .para mark{background:#007AFF;color:#fff;border-radius:3px;padding:0 2px}
+    .para.hide{display:none}
+    body.tr-lock{overflow:hidden}
+    .hr-link{color:#007AFF;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}.hr-link:hover{color:#0062CC}
+    .chip{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:3px 9px;border-radius:8px;font-size:11px;font-weight:700;line-height:1.2;text-decoration:none}
+    @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-white">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="shik" viewBox="0 15 398 90"><path fill="currentColor" shape-rendering="crispEdges" d="M0 15h16v1h-16zM62 15h16v1h-16zM126 15h16v1h-16zM156 15h16v1h-16zM237 15h28v1h-28zM279 15h17v1h-17zM369 15h19v1h-19zM0 16h16v1h-16zM62 16h16v1h-16zM126 16h16v1h-16zM155 16h17v1h-17zM237 16h29v1h-29zM279 16h17v1h-17zM369 16h19v1h-19zM0 17h16v1h-16zM62 17h16v1h-16zM126 17h16v1h-16zM155 17h17v1h-17zM236 17h30v1h-30zM279 17h17v1h-17zM368 17h19v1h-19zM0 18h16v1h-16zM62 18h16v1h-16zM126 18h16v1h-16zM155 18h17v1h-17zM235 18h31v1h-31zM279 18h17v1h-17zM367 18h20v1h-20zM0 19h16v1h-16zM62 19h16v1h-16zM126 19h16v1h-16zM155 19h17v1h-17zM234 19h32v1h-32zM279 19h17v1h-17zM367 19h19v1h-19zM0 20h16v1h-16zM62 20h16v1h-16zM126 20h16v1h-16zM155 20h17v1h-17zM233 20h33v1h-33zM279 20h17v1h-17zM366 20h19v1h-19zM0 21h16v1h-16zM62 21h16v1h-16zM126 21h16v1h-16zM155 21h17v1h-17zM233 21h33v1h-33zM279 21h17v1h-17zM366 21h19v1h-19zM0 22h16v1h-16zM62 22h16v1h-16zM126 22h16v1h-16zM155 22h17v1h-17zM232 22h34v1h-34zM279 22h17v1h-17zM365 22h19v1h-19zM0 23h16v1h-16zM62 23h16v1h-16zM126 23h16v1h-16zM155 23h17v1h-17zM231 23h35v1h-35zM279 23h17v1h-17zM365 23h19v1h-19zM0 24h16v1h-16zM62 24h16v1h-16zM126 24h16v1h-16zM155 24h17v1h-17zM230 24h36v1h-36zM279 24h17v1h-17zM364 24h19v1h-19zM0 25h16v1h-16zM62 25h16v1h-16zM126 25h16v1h-16zM155 25h17v1h-17zM229 25h37v1h-37zM279 25h17v1h-17zM363 25h20v1h-20zM0 26h16v1h-16zM62 26h16v1h-16zM126 26h16v1h-16zM155 26h17v1h-17zM228 26h38v1h-38zM279 26h17v1h-17zM363 26h19v1h-19zM0 27h16v1h-16zM62 27h16v1h-16zM126 27h16v1h-16zM155 27h17v1h-17zM227 27h39v1h-39zM279 27h17v1h-17zM362 27h19v1h-19zM0 28h16v1h-16zM62 28h16v1h-16zM126 28h16v1h-16zM155 28h17v1h-17zM227 28h39v1h-39zM279 28h17v1h-17zM362 28h19v1h-19zM0 29h16v1h-16zM62 29h16v1h-16zM126 29h16v1h-16zM155 29h17v1h-17zM226 29h40v1h-40zM279 29h17v1h-17zM361 29h19v1h-19zM0 30h16v1h-16zM62 30h16v1h-16zM126 30h16v1h-16zM155 30h17v1h-17zM225 30h41v1h-41zM279 30h17v1h-17zM361 30h19v1h-19zM0 31h16v1h-16zM62 31h16v1h-16zM126 31h16v1h-16zM155 31h17v1h-17zM224 31h42v1h-42zM279 31h17v1h-17zM360 31h19v1h-19zM0 32h16v1h-16zM62 32h16v1h-16zM126 32h16v1h-16zM155 32h17v1h-17zM223 32h21v1h-21zM249 32h17v1h-17zM279 32h17v1h-17zM360 32h18v1h-18zM0 33h16v1h-16zM62 33h16v1h-16zM126 33h16v1h-16zM155 33h17v1h-17zM222 33h21v1h-21zM249 33h17v1h-17zM279 33h17v1h-17zM359 33h19v1h-19zM0 34h16v1h-16zM62 34h16v1h-16zM126 34h16v1h-16zM155 34h17v1h-17zM222 34h20v1h-20zM249 34h17v1h-17zM279 34h17v1h-17zM358 34h19v1h-19zM0 35h16v1h-16zM62 35h16v1h-16zM126 35h16v1h-16zM155 35h17v1h-17zM221 35h20v1h-20zM249 35h17v1h-17zM279 35h17v1h-17zM358 35h19v1h-19zM0 36h16v1h-16zM62 36h16v1h-16zM126 36h16v1h-16zM155 36h17v1h-17zM220 36h20v1h-20zM249 36h17v1h-17zM279 36h17v1h-17zM357 36h19v1h-19zM0 37h16v1h-16zM62 37h16v1h-16zM126 37h16v1h-16zM155 37h17v1h-17zM219 37h21v1h-21zM249 37h17v1h-17zM279 37h17v1h-17zM357 37h18v1h-18zM0 38h16v1h-16zM62 38h16v1h-16zM126 38h16v1h-16zM155 38h17v1h-17zM218 38h21v1h-21zM249 38h17v1h-17zM279 38h17v1h-17zM356 38h19v1h-19zM0 39h16v1h-16zM62 39h16v1h-16zM126 39h16v1h-16zM155 39h17v1h-17zM217 39h21v1h-21zM249 39h17v1h-17zM279 39h17v1h-17zM355 39h19v1h-19zM0 40h16v1h-16zM62 40h16v1h-16zM126 40h16v1h-16zM155 40h17v1h-17zM216 40h21v1h-21zM249 40h17v1h-17zM279 40h17v1h-17zM355 40h19v1h-19zM0 41h16v1h-16zM62 41h16v1h-16zM126 41h16v1h-16zM155 41h17v1h-17zM216 41h20v1h-20zM249 41h17v1h-17zM279 41h17v1h-17zM354 41h19v1h-19zM0 42h16v1h-16zM62 42h16v1h-16zM126 42h16v1h-16zM155 42h17v1h-17zM215 42h21v1h-21zM249 42h17v1h-17zM279 42h17v1h-17zM354 42h18v1h-18zM0 43h16v1h-16zM62 43h16v1h-16zM126 43h16v1h-16zM155 43h17v1h-17zM214 43h21v1h-21zM249 43h17v1h-17zM279 43h17v1h-17zM353 43h19v1h-19zM0 44h16v1h-16zM62 44h16v1h-16zM126 44h16v1h-16zM155 44h17v1h-17zM213 44h21v1h-21zM249 44h17v1h-17zM279 44h92v1h-92zM0 45h16v1h-16zM62 45h16v1h-16zM126 45h16v1h-16zM155 45h17v1h-17zM212 45h21v1h-21zM249 45h17v1h-17zM279 45h92v1h-92zM0 46h16v1h-16zM62 46h16v1h-16zM126 46h16v1h-16zM155 46h17v1h-17zM212 46h20v1h-20zM249 46h17v1h-17zM279 46h91v1h-91zM0 47h16v1h-16zM62 47h16v1h-16zM126 47h16v1h-16zM155 47h17v1h-17zM211 47h20v1h-20zM249 47h17v1h-17zM279 47h91v1h-91zM0 48h16v1h-16zM62 48h16v1h-16zM126 48h16v1h-16zM155 48h17v1h-17zM210 48h20v1h-20zM249 48h17v1h-17zM279 48h90v1h-90zM0 49h16v1h-16zM62 49h16v1h-16zM126 49h16v1h-16zM155 49h17v1h-17zM209 49h21v1h-21zM249 49h17v1h-17zM279 49h89v1h-89zM0 50h16v1h-16zM62 50h16v1h-16zM126 50h16v1h-16zM155 50h17v1h-17zM208 50h21v1h-21zM249 50h17v1h-17zM279 50h89v1h-89zM0 51h16v1h-16zM62 51h16v1h-16zM126 51h16v1h-16zM155 51h17v1h-17zM207 51h21v1h-21zM249 51h17v1h-17zM279 51h88v1h-88zM0 52h16v1h-16zM62 52h16v1h-16zM126 52h16v1h-16zM155 52h17v1h-17zM206 52h21v1h-21zM249 52h17v1h-17zM279 52h88v1h-88zM0 53h16v1h-16zM62 53h16v1h-16zM126 53h16v1h-16zM155 53h17v1h-17zM206 53h20v1h-20zM249 53h17v1h-17zM279 53h89v1h-89zM0 54h16v1h-16zM62 54h16v1h-16zM126 54h16v1h-16zM155 54h17v1h-17zM205 54h21v1h-21zM249 54h17v1h-17zM279 54h90v1h-90zM0 55h16v1h-16zM62 55h16v1h-16zM126 55h16v1h-16zM155 55h17v1h-17zM204 55h21v1h-21zM249 55h17v1h-17zM279 55h90v1h-90zM0 56h16v1h-16zM62 56h16v1h-16zM126 56h16v1h-16zM155 56h17v1h-17zM203 56h21v1h-21zM249 56h17v1h-17zM279 56h91v1h-91zM0 57h16v1h-16zM62 57h16v1h-16zM126 57h16v1h-16zM155 57h17v1h-17zM202 57h21v1h-21zM249 57h17v1h-17zM279 57h91v1h-91zM0 58h16v1h-16zM62 58h16v1h-16zM126 58h16v1h-16zM155 58h17v1h-17zM201 58h21v1h-21zM249 58h17v1h-17zM279 58h92v1h-92zM0 59h16v1h-16zM62 59h16v1h-16zM126 59h16v1h-16zM155 59h17v1h-17zM201 59h20v1h-20zM249 59h17v1h-17zM279 59h92v1h-92zM0 60h16v1h-16zM62 60h16v1h-16zM126 60h16v1h-16zM155 60h17v1h-17zM200 60h20v1h-20zM249 60h17v1h-17zM279 60h17v1h-17zM353 60h19v1h-19zM0 61h16v1h-16zM62 61h16v1h-16zM126 61h16v1h-16zM155 61h17v1h-17zM199 61h21v1h-21zM249 61h17v1h-17zM279 61h17v1h-17zM354 61h18v1h-18zM0 62h16v1h-16zM62 62h16v1h-16zM126 62h16v1h-16zM155 62h17v1h-17zM198 62h21v1h-21zM249 62h17v1h-17zM279 62h17v1h-17zM354 62h19v1h-19zM0 63h16v1h-16zM62 63h16v1h-16zM126 63h16v1h-16zM155 63h17v1h-17zM197 63h21v1h-21zM249 63h17v1h-17zM279 63h17v1h-17zM355 63h19v1h-19zM0 64h16v1h-16zM62 64h16v1h-16zM126 64h16v1h-16zM155 64h17v1h-17zM196 64h21v1h-21zM249 64h17v1h-17zM279 64h17v1h-17zM355 64h19v1h-19zM0 65h16v1h-16zM62 65h16v1h-16zM126 65h16v1h-16zM155 65h17v1h-17zM195 65h21v1h-21zM249 65h17v1h-17zM279 65h17v1h-17zM356 65h19v1h-19zM0 66h16v1h-16zM62 66h16v1h-16zM126 66h16v1h-16zM155 66h17v1h-17zM194 66h21v1h-21zM249 66h17v1h-17zM279 66h17v1h-17zM356 66h19v1h-19zM0 67h16v1h-16zM62 67h16v1h-16zM126 67h16v1h-16zM155 67h17v1h-17zM194 67h21v1h-21zM249 67h17v1h-17zM279 67h17v1h-17zM357 67h19v1h-19zM0 68h16v1h-16zM62 68h16v1h-16zM126 68h16v1h-16zM155 68h17v1h-17zM193 68h21v1h-21zM249 68h17v1h-17zM279 68h17v1h-17zM357 68h20v1h-20zM0 69h16v1h-16zM62 69h16v1h-16zM126 69h16v1h-16zM155 69h17v1h-17zM192 69h21v1h-21zM249 69h17v1h-17zM279 69h17v1h-17zM358 69h19v1h-19zM0 70h16v1h-16zM62 70h16v1h-16zM126 70h16v1h-16zM155 70h17v1h-17zM191 70h21v1h-21zM249 70h17v1h-17zM279 70h17v1h-17zM359 70h19v1h-19zM0 71h16v1h-16zM62 71h16v1h-16zM126 71h16v1h-16zM155 71h17v1h-17zM190 71h21v1h-21zM249 71h17v1h-17zM279 71h17v1h-17zM359 71h19v1h-19zM0 72h16v1h-16zM62 72h16v1h-16zM126 72h16v1h-16zM155 72h17v1h-17zM190 72h20v1h-20zM249 72h17v1h-17zM279 72h17v1h-17zM360 72h19v1h-19zM0 73h16v1h-16zM62 73h16v1h-16zM126 73h16v1h-16zM155 73h17v1h-17zM189 73h21v1h-21zM249 73h17v1h-17zM279 73h17v1h-17zM360 73h20v1h-20zM0 74h16v1h-16zM62 74h16v1h-16zM126 74h16v1h-16zM155 74h17v1h-17zM188 74h21v1h-21zM249 74h17v1h-17zM279 74h17v1h-17zM361 74h19v1h-19zM0 75h16v1h-16zM62 75h16v1h-16zM126 75h16v1h-16zM155 75h17v1h-17zM187 75h21v1h-21zM249 75h17v1h-17zM279 75h17v1h-17zM362 75h19v1h-19zM0 76h16v1h-16zM62 76h16v1h-16zM126 76h16v1h-16zM155 76h17v1h-17zM186 76h21v1h-21zM249 76h17v1h-17zM279 76h17v1h-17zM362 76h19v1h-19zM0 77h16v1h-16zM62 77h16v1h-16zM126 77h16v1h-16zM155 77h17v1h-17zM185 77h21v1h-21zM249 77h17v1h-17zM279 77h17v1h-17zM363 77h19v1h-19zM0 78h16v1h-16zM62 78h16v1h-16zM126 78h16v1h-16zM155 78h17v1h-17zM184 78h21v1h-21zM249 78h17v1h-17zM279 78h17v1h-17zM363 78h20v1h-20zM0 79h16v1h-16zM62 79h16v1h-16zM126 79h16v1h-16zM155 79h17v1h-17zM184 79h21v1h-21zM249 79h17v1h-17zM279 79h17v1h-17zM364 79h19v1h-19zM0 80h16v1h-16zM62 80h16v1h-16zM126 80h16v1h-16zM155 80h17v1h-17zM183 80h21v1h-21zM249 80h17v1h-17zM279 80h17v1h-17zM364 80h19v1h-19zM0 81h16v1h-16zM62 81h16v1h-16zM126 81h16v1h-16zM155 81h17v1h-17zM182 81h21v1h-21zM249 81h17v1h-17zM279 81h17v1h-17zM365 81h19v1h-19zM0 82h16v1h-16zM62 82h16v1h-16zM126 82h16v1h-16zM155 82h17v1h-17zM181 82h21v1h-21zM249 82h17v1h-17zM279 82h17v1h-17zM365 82h20v1h-20zM0 83h16v1h-16zM62 83h16v1h-16zM126 83h16v1h-16zM155 83h17v1h-17zM180 83h21v1h-21zM249 83h17v1h-17zM279 83h17v1h-17zM366 83h19v1h-19zM0 84h16v1h-16zM62 84h16v1h-16zM126 84h16v1h-16zM155 84h17v1h-17zM180 84h20v1h-20zM249 84h17v1h-17zM279 84h17v1h-17zM367 84h19v1h-19zM0 85h16v1h-16zM62 85h16v1h-16zM126 85h16v1h-16zM155 85h17v1h-17zM179 85h20v1h-20zM249 85h17v1h-17zM279 85h17v1h-17zM367 85h20v1h-20zM0 86h16v1h-16zM62 86h16v1h-16zM126 86h16v1h-16zM155 86h17v1h-17zM178 86h20v1h-20zM249 86h17v1h-17zM279 86h17v1h-17zM368 86h19v1h-19zM0 87h16v1h-16zM62 87h16v1h-16zM126 87h16v1h-16zM155 87h17v1h-17zM177 87h21v1h-21zM249 87h17v1h-17zM279 87h17v1h-17zM368 87h20v1h-20zM0 88h16v1h-16zM62 88h16v1h-16zM126 88h16v1h-16zM155 88h42v1h-42zM249 88h17v1h-17zM279 88h17v1h-17zM369 88h19v1h-19zM0 89h142v1h-142zM155 89h41v1h-41zM249 89h17v1h-17zM279 89h17v1h-17zM369 89h20v1h-20zM0 90h142v1h-142zM155 90h40v1h-40zM249 90h17v1h-17zM279 90h17v1h-17zM370 90h19v1h-19zM0 91h142v1h-142zM155 91h39v1h-39zM249 91h17v1h-17zM279 91h17v1h-17zM371 91h19v1h-19zM0 92h142v1h-142zM155 92h39v1h-39zM249 92h17v1h-17zM279 92h17v1h-17zM371 92h20v1h-20zM0 93h142v1h-142zM155 93h38v1h-38zM249 93h17v1h-17zM279 93h17v1h-17zM372 93h19v1h-19zM0 94h142v1h-142zM155 94h37v1h-37zM249 94h17v1h-17zM279 94h17v1h-17zM372 94h20v1h-20zM0 95h142v1h-142zM155 95h36v1h-36zM249 95h17v1h-17zM279 95h17v1h-17zM373 95h20v1h-20zM0 96h142v1h-142zM155 96h35v1h-35zM249 96h17v1h-17zM279 96h17v1h-17zM373 96h20v1h-20zM0 97h142v1h-142zM155 97h34v1h-34zM249 97h17v1h-17zM279 97h17v1h-17zM374 97h20v1h-20zM0 98h142v1h-142zM155 98h33v1h-33zM249 98h17v1h-17zM279 98h17v1h-17zM375 98h19v1h-19zM0 99h142v1h-142zM155 99h33v1h-33zM249 99h17v1h-17zM279 99h17v1h-17zM375 99h20v1h-20zM0 100h142v1h-142zM155 100h32v1h-32zM249 100h17v1h-17zM279 100h17v1h-17zM376 100h19v1h-19zM0 101h142v1h-142zM155 101h31v1h-31zM249 101h17v1h-17zM279 101h17v1h-17zM376 101h20v1h-20zM0 102h142v1h-142zM155 102h30v1h-30zM249 102h17v1h-17zM279 102h17v1h-17zM377 102h20v1h-20zM0 103h142v1h-142zM155 103h29v1h-29zM249 103h17v1h-17zM279 103h17v1h-17zM377 103h20v1h-20zM0 104h142v1h-142zM156 104h28v1h-28zM249 104h16v1h-16zM279 104h17v1h-17zM378 104h19v1h-19z"/></symbol></svg>
+
+  <header class="sticky top-0 z-50 bg-paper/95 backdrop-blur-md border-b border-ink/15">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <a href="#hero" class="flex items-center gap-3 flex-shrink-0">
+        <svg class="h-5 w-[66px] text-ink" aria-label="ШИК"><use href="#shik"/></svg>
+        <span class="hidden sm:block leading-none border-l border-ink/20 pl-3">
+          <span class="font-display font-black text-xs tracking-tight uppercase block">Штольцман и Кац</span>
+          <span class="text-[11px] font-medium text-muted block mt-0.5 whitespace-nowrap">Экспресс-диагностика</span>
+        </span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1.5 bg-paperDark/80 p-1 rounded-full border border-ink/10" aria-label="Разделы">
+        <a href="#hero" class="nav-pill bg-ink text-white" data-slide="01/06">01 • Старт</a>
+        <a href="#diagnostics" class="nav-pill text-muted hover:text-ink" data-slide="02/06">02 • Точка А → Б</a>
+        <a href="#hypotheses" class="nav-pill text-muted hover:text-ink" data-slide="03/06">03 • Гипотезы</a>
+        <a href="#focus" class="nav-pill text-muted hover:text-ink" data-slide="04/06">04 • Фокус</a>
+        <a href="#process" class="nav-pill text-muted hover:text-ink" data-slide="05/06">05 • Трекинг</a>
+        <a href="#about" class="nav-pill text-muted hover:text-ink" data-slide="06/06">06 • Обо мне</a>
+      </nav>
+      <div class="flex items-center gap-2.5 flex-shrink-0">
+        <a href="#transcript" data-tr="1" class="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-white border border-ink/20 hover:border-accent text-[11px] font-bold uppercase tracking-wide whitespace-nowrap">
+          <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h10M7 16h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
+          Транскрипт
+        </a>
+        <span id="current-slide-indicator" class="font-display font-black text-xs sm:text-sm tracking-tight tabular-nums whitespace-nowrap">01/06</span>
+      </div>
+    </div>
+    <div class="lg:hidden border-t border-ink/10 bg-paper/95 px-4 py-1.5 overflow-x-auto no-scrollbar">
+      <div class="flex items-center gap-1.5 w-max">
+        <a href="#hero" class="nav-pill bg-ink text-white" data-slide="01/06">01 • Старт</a>
+        <a href="#diagnostics" class="nav-pill text-muted hover:text-ink" data-slide="02/06">02 • Точка А → Б</a>
+        <a href="#hypotheses" class="nav-pill text-muted hover:text-ink" data-slide="03/06">03 • Гипотезы</a>
+        <a href="#focus" class="nav-pill text-muted hover:text-ink" data-slide="04/06">04 • Фокус</a>
+        <a href="#process" class="nav-pill text-muted hover:text-ink" data-slide="05/06">05 • Трекинг</a>
+        <a href="#about" class="nav-pill text-muted hover:text-ink" data-slide="06/06">06 • Обо мне</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6">
+
+    <!-- 01 HERO -->
+    <section id="hero" data-slide="01/06" class="min-h-[calc(100vh-5rem)] py-12 sm:py-16 flex flex-col justify-between border-b border-ink/15">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <svg class="h-9 w-[119px] text-ink" aria-label="ШИК"><use href="#shik"/></svg>
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-ink/20 text-xs font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-accent"></span>Для Василия
+          </span>
+        </div>
+        <div class="inline-flex items-center gap-2 text-xs font-medium text-muted">
+          <span class="w-5 h-5 rounded-full bg-accent text-white font-bold text-xs flex items-center justify-center flex-shrink-0">i</span>
+          <span>Бизнес Продюсер • Экспресс-диагностика 30 минут</span>
+        </div>
+      </div>
+
+      <div class="my-14 sm:my-20">
+        <h1 class="font-display-tight font-black text-5xl sm:text-7xl md:text-8xl lg:text-[96px] uppercase">
+          ШИК <span class="text-accent">×</span> фокус
+        </h1>
+        <p class="mt-4 text-2xl sm:text-4xl font-display font-extrabold tracking-tight text-inkSoft">Путь к 10 млн чистыми в месяц</p>
+        <p class="mt-4 text-sm sm:text-base text-muted max-w-xl leading-relaxed">
+          Что услышал на созвоне, какие гипотезы фиксирую и рабочий инструмент, чтобы каждая новая идея проходила через фильтр фокуса до того, как ты сядешь её делать сам.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href="#focus" class="btn inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-ink hover:bg-accent text-white font-display font-extrabold text-xs uppercase tracking-wider transition-colors">
+            <span>Открыть калькулятор фокуса</span><span>↓</span>
+          </a>
+          <a href="#hypotheses" class="btn inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white/80 hover:bg-white border border-ink/25 font-display font-extrabold text-xs uppercase tracking-wider transition-colors">7 гипотез</a>
+          <a href="#transcript" data-tr="1" class="btn inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white/80 hover:bg-white border border-ink/25 font-display font-extrabold text-xs uppercase tracking-wider transition-colors">Прочитать транскрипт ↗</a>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-ink/15 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 flex-1">
+          <div>
+            <p class="font-display font-extrabold text-xs uppercase tracking-wider text-accent">Цель</p>
+            <p class="mt-1 text-xl sm:text-2xl font-display font-black">10 млн ₽ чистыми</p>
+            <p class="text-xs text-muted mt-0.5">Лично в месяц</p>
+          </div>
+          <div>
+            <p class="font-display font-extrabold text-xs uppercase tracking-wider text-muted">Продукт-якорь</p>
+            <p class="mt-1 text-xl sm:text-2xl font-display font-black">4 бренда под ключ</p>
+            <p class="text-xs text-muted mt-0.5">В месяц, ориентир выручки 16 млн ₽</p>
+          </div>
+          <div>
+            <p class="font-display font-extrabold text-xs uppercase tracking-wider text-muted">Воронка</p>
+            <p class="mt-1 text-xl sm:text-2xl font-display font-black">150 лидов за 3 мес</p>
+            <p class="text-xs text-muted mt-0.5">Раньше было около 200 за весь год</p>
+          </div>
+        </div>
+        <div class="hidden sm:flex justify-end flex-shrink-0" aria-hidden="true">
+          <svg class="w-28 h-14" viewBox="0 0 120 60" fill="none">
+            <line x1="0" y1="58" x2="120" y2="58" stroke="#111" stroke-width="1.2"/>
+            <path d="M52 58C52 53.58 55.58 50 60 50C64.42 50 68 53.58 68 58H52Z" fill="#111"/>
+            <g stroke="#111" stroke-width="1.1"><line x1="60" y1="58" x2="10" y2="46"/><line x1="60" y1="58" x2="15" y2="34"/><line x1="60" y1="58" x2="23" y2="23"/><line x1="60" y1="58" x2="34" y2="14"/><line x1="60" y1="58" x2="46" y2="8"/><line x1="60" y1="58" x2="60" y2="6"/><line x1="60" y1="58" x2="74" y2="8"/><line x1="60" y1="58" x2="86" y2="14"/><line x1="60" y1="58" x2="97" y2="23"/><line x1="60" y1="58" x2="105" y2="34"/><line x1="60" y1="58" x2="110" y2="46"/></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 ТОЧКА А → Б -->
+    <section id="diagnostics" data-slide="02/06" class="py-16 sm:py-20 border-b border-ink/15">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-accent">Раздел 01 • Что прозвучало</span>
+          <h2 class="font-display-tight font-black text-3xl sm:text-5xl uppercase mt-2">Точка А → Точка Б</h2>
+        </div>
+        <p class="text-sm text-muted max-w-md">Собрано из анкеты в боте и 30 минут разговора. Цифр было недостаточно, опираюсь на то, что есть.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="dashed-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 pb-4 mb-6 border-b border-ink/15">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-muted">Точка А • Ноябрь 2026</span>
+                <h3 class="font-display font-black text-xl uppercase mt-1">Рост есть, фокуса мало</h3>
+              </div>
+              <span class="px-3 py-1 rounded-md bg-ink/10 font-display font-extrabold text-xs uppercase">Сейчас</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3.5">
+              <div class="bg-paper rounded-xl p-4 border border-ink/10">
+                <span class="text-xs text-muted block">Средний чек «в целом»</span>
+                <span class="font-display font-black text-lg sm:text-xl mt-1 block">~800 тыс ₽</span>
+                <span class="text-[11px] text-muted">Разброс от нейма за 350 тыс до комплекса за 5 млн</span>
+              </div>
+              <div class="bg-paper rounded-xl p-4 border border-ink/10">
+                <span class="text-xs text-muted block">Лиды</span>
+                <span class="font-display font-black text-lg sm:text-xl mt-1 block">~200 в год</span>
+                <span class="text-[11px] text-muted">Четверть годового плана по входящим уже набрана</span>
+              </div>
+              <div class="bg-paper rounded-xl p-4 border border-ink/10">
+                <span class="text-xs text-muted block">Динамика</span>
+                <span class="font-display font-black text-lg sm:text-xl mt-1 block">×2 доход</span>
+                <span class="text-[11px] text-muted">За последние 2 месяца; декабрь ждёшь в плане</span>
+              </div>
+              <div class="bg-paper rounded-xl p-4 border border-ink/10">
+                <span class="text-xs text-muted block">Канал А, который сработал</span>
+                <span class="font-display font-black text-lg sm:text-xl mt-1 block">№2 в рейтинге</span>
+                <span class="text-[11px] text-muted">Пошёл поток А-клиентов из девелопмента</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-ink/10 text-xs text-muted leading-relaxed">
+            <strong class="text-ink">Что держишь сам:</strong> продажи классу А, пиар, утверждение креатива, подрядчики, финансы, стратегия. Плюс то, что «прилетает» и сразу делается: вчера ты сам переделал КП, потому что команда три месяца тратила на каждое по полтора часа.
+          </div>
+        </div>
+
+        <div class="dashed-card rounded-2xl p-6 sm:p-8 !border-accent !bg-white/80 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 pb-4 mb-6 border-b border-accent/20">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-accent">Точка Б • Цель</span>
+                <h3 class="font-display font-black text-xl uppercase mt-1">Агентство комплексного брендинга</h3>
+              </div>
+              <span class="px-3 py-1 rounded-md bg-accent text-white font-display font-extrabold text-xs uppercase">10 млн</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3.5">
+              <div class="bg-paper rounded-xl p-4 border border-accent/25">
+                <span class="text-xs text-muted block">Чистая прибыль</span>
+                <span class="font-display font-black text-lg sm:text-xl text-accent mt-1 block">10 млн ₽</span>
+                <span class="text-[11px] text-muted">Лично в месяц</span>
+              </div>
+              <div class="bg-paper rounded-xl p-4 border border-accent/25">
+                <span class="text-xs text-muted block">Продукт</span>
+                <span class="font-display font-black text-lg sm:text-xl text-accent mt-1 block">4 бренда/мес</span>
+                <span class="text-[11px] text-muted">Комплексный брендинг под ключ</span>
+              </div>
+              <div class="bg-paper rounded-xl p-4 border border-accent/25">
+                <span class="text-xs text-muted block">Исходящие</span>
+                <span class="font-display font-black text-lg sm:text-xl mt-1 block">4 базы</span>
+                <span class="text-[11px] text-muted">200 купленных А, интро от партнёра, отвалы, спящие клиенты</span>
+              </div>
+              <div class="bg-paper rounded-xl p-4 border border-accent/25">
+                <span class="text-xs text-muted block">Роль Василия</span>
+                <span class="font-display font-black text-lg sm:text-xl mt-1 block">Встречи и рост</span>
+                <span class="text-[11px] text-muted">Операционку и структуру держит команда</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-accent/20 text-xs leading-relaxed">
+            <strong class="text-accent">Что бесит прямо сейчас:</strong> с ростом загрузки дизайнеры отдают работу ниже прежнего уровня, и тебя затягивает обратно в правки. Это главный вор времени, которое должно уходить на А-клиентов.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 03 ГИПОТЕЗЫ -->
+    <section id="hypotheses" data-slide="03/06" class="py-16 sm:py-20 border-b border-ink/15">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-accent">Раздел 02 • Взгляд трекера</span>
+          <h2 class="font-display-tight font-black text-3xl sm:text-5xl uppercase mt-2">7 гипотез, которые фиксирую</h2>
+        </div>
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Фильтр гипотез">
+          <button type="button" data-f="ALL" class="hf btn px-3.5 py-2 rounded-xl text-xs font-display font-extrabold uppercase whitespace-nowrap">Все</button>
+          <button type="button" data-f="focus" class="hf btn px-3.5 py-2 rounded-xl text-xs font-display font-extrabold uppercase whitespace-nowrap">Фокус</button>
+          <button type="button" data-f="sales" class="hf btn px-3.5 py-2 rounded-xl text-xs font-display font-extrabold uppercase whitespace-nowrap">Продажи А</button>
+          <button type="button" data-f="team" class="hf btn px-3.5 py-2 rounded-xl text-xs font-display font-extrabold uppercase whitespace-nowrap">Команда</button>
+        </div>
+      </div>
+      <p class="text-sm text-muted max-w-2xl mb-8">Это гипотезы для проверки, их стоит прогнать через калькулятор фокуса и цифры. Отмечай, что берёшь в работу: выбор сохранится в этом браузере.</p>
+      <div id="hyp-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+    </section>
+
+    <!-- 04 ФОКУС -->
+    <section id="focus" data-slide="04/06" class="py-16 sm:py-20 border-b border-ink/15">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-accent">Раздел 03 • Инструмент</span>
+          <h2 class="font-display-tight font-black text-3xl sm:text-5xl uppercase mt-2">Калькулятор золотых задач</h2>
+        </div>
+        <button type="button" id="how-btn" class="btn self-start md:self-auto px-4 py-2 rounded-xl border border-ink/25 bg-white/80 hover:bg-ink hover:text-white text-xs font-display font-extrabold uppercase tracking-wider transition-colors">Как считается ?</button>
+      </div>
+      <p class="text-sm text-muted max-w-2xl mb-8">Прилетела мысль или задача? Перед тем как браться, оцени её. Семь ползунков, минута на оценку. Она экономит день на задаче, которая к 10 млн не ведёт.</p>
+
+      <div class="dashed-card rounded-2xl p-5 sm:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-7 space-y-5">
+            <label class="block">
+              <span class="text-sm font-bold block mb-2">Задача</span>
+              <input id="task-name" type="text" maxlength="120" placeholder="Например: переделать шаблон КП" class="w-full text-base px-4 py-3 rounded-xl border-[1.5px] border-dashed border-muted bg-white/80 focus:border-solid focus:border-accent outline-none" />
+            </label>
+            <div id="crit-list" class="space-y-5"></div>
+            <div class="flex items-center justify-between gap-4 bg-paper rounded-xl border border-ink/10 p-4">
+              <div>
+                <span class="text-sm font-bold block">Это может сделать кто-то кроме меня</span>
+                <span class="text-xs text-muted">Исполнительный директор, продажник, ассистент, стратег</span>
+              </div>
+              <button type="button" id="deleg" role="switch" aria-checked="false" class="toggle" aria-label="Можно делегировать"></button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="lg:sticky lg:top-28 bg-paper rounded-2xl p-6 border border-ink/20">
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-ink/15">
+                <span class="font-display font-extrabold text-xs uppercase tracking-wider">Скоринг задачи</span>
+                <span class="text-[11px] font-semibold text-muted">0–100</span>
+              </div>
+              <div class="flex items-center gap-5">
+                <div class="relative w-32 h-32 flex-shrink-0">
+                  <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#ECE9E1" stroke-width="12"/>
+                    <circle id="gauge" class="gauge-ring" cx="60" cy="60" r="50" fill="none" stroke="#007AFF" stroke-width="12" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+                  </svg>
+                  <span id="score" class="absolute inset-0 flex items-center justify-center font-display font-black text-4xl tabular-nums">0</span>
+                </div>
+                <div>
+                  <span id="verdict-tag" class="inline-block px-2.5 py-1 rounded bg-ink text-white font-display font-extrabold text-[11px] uppercase">—</span>
+                  <p id="verdict-title" class="font-display font-black text-lg uppercase mt-2 leading-tight">Оцени задачу</p>
+                </div>
+              </div>
+              <p id="verdict-text" class="text-sm text-inkSoft leading-relaxed mt-4">Двигай ползунки, рекомендация пересчитывается сразу.</p>
+              <div id="breakdown" class="mt-5 space-y-2"></div>
+              <button type="button" id="add-task" class="btn w-full mt-6 px-5 py-3.5 rounded-xl bg-ink hover:bg-accent text-white font-display font-extrabold text-xs uppercase tracking-wider transition-colors">Добавить в список задач</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-display font-black text-lg uppercase">Список задач по приоритету</h3>
+            <p class="text-xs text-muted mt-1">Примеры из разговора стоят в списке с моей оценкой. Переоцени их сам: нажми на задачу, и она загрузится в калькулятор.</p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" id="copy-list" class="btn px-3.5 py-2 rounded-xl border border-ink/25 bg-white/80 hover:border-accent text-xs font-display font-extrabold uppercase">Скопировать</button>
+            <button type="button" id="reset-list" class="btn px-3.5 py-2 rounded-xl border border-ink/25 bg-white/80 hover:border-accent text-xs font-display font-extrabold uppercase">Сбросить к примерам</button>
+          </div>
+        </div>
+        <ol id="task-list" class="space-y-2.5"></ol>
+        <p id="copy-msg" class="text-xs text-accent mt-2 h-4" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- 05 ТРЕКИНГ -->
+    <section id="process" data-slide="05/06" class="py-16 sm:py-20 border-b border-ink/15">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-accent">Раздел 04 • Система трекинга</span>
+          <h2 class="font-display-tight font-black text-3xl sm:text-5xl uppercase mt-2">Как это работает</h2>
+          <p class="text-sm text-muted mt-2 max-w-xl">Маршрут внедрения через регулярные циклы. Экспресс-диагностику мы уже прошли.</p>
+          <p class="text-sm text-inkSoft mt-3 max-w-2xl leading-relaxed">Моя роль в трекинге: держать фокус, когда прилетают новые идеи, следить, чтобы взятые задачи не потерялись между встречами, и не давать сбиться с пути до результата. Гипотезы, которые ты отметил «в работу», уже стоят на своих неделях ниже.</p>
+        </div>
+        <span class="text-xs font-bold uppercase tracking-wider text-muted md:text-right">Прогнозируемая<br class="hidden md:inline" /> динамика перемен</span>
+      </div>
+
+      <div class="hidden lg:block mb-8 pt-2" aria-hidden="true">
+        <svg class="w-full h-24 overflow-visible" viewBox="0 0 1000 90" fill="none" preserveAspectRatio="none">
+          <line x1="20" y1="55" x2="900" y2="55" stroke="#111" stroke-width="1.4"/>
+          <polygon points="900,25 990,55 900,85" fill="#F6F4EF" stroke="#111" stroke-width="1.4"/>
+          <polygon points="900,55 990,55 900,85" fill="#111" fill-opacity=".16"/>
+          <path d="M 30 72 C 160 22, 310 66, 470 40 C 630 16, 770 34, 950 10" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round"/>
+          <rect x="85" y="48" width="14" height="14" fill="#F6F4EF" stroke="#111" stroke-width="1.5"/><rect x="85" y="48" width="7" height="7" fill="#111"/>
+          <rect x="285" y="48" width="14" height="14" fill="#F6F4EF" stroke="#111" stroke-width="1.5"/><rect x="292" y="55" width="7" height="7" fill="#111"/>
+          <rect x="485" y="48" width="14" height="14" fill="#F6F4EF" stroke="#111" stroke-width="1.5"/><rect x="485" y="48" width="7" height="7" fill="#111"/>
+          <rect x="685" y="48" width="14" height="14" fill="#F6F4EF" stroke="#111" stroke-width="1.5"/><rect x="692" y="55" width="7" height="7" fill="#111"/>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="rounded-2xl p-5 bg-white/80 border-2 border-accent flex flex-col justify-between">
+          <div><span class="inline-block px-2 py-0.5 rounded bg-accent text-white font-display font-extrabold text-[10px] uppercase mb-2">Пройдено ✓</span>
+            <h3 class="font-display font-black text-base uppercase">Диагностика</h3><p class="text-xs text-muted mt-1">30-минутный экспресс-разбор</p></div>
+          <div class="mt-4 pt-3 border-t border-ink/15 text-xs font-medium text-inkSoft">Узкие места, гипотезы и инструмент фокуса.</div>
+        </div>
+        <div class="dashed-card rounded-2xl p-5 flex flex-col justify-between">
+          <div><span class="inline-block px-2 py-0.5 rounded bg-ink text-white font-display font-extrabold text-[10px] uppercase mb-2">1 встреча • неделя 1</span>
+            <h3 class="font-display font-black text-base uppercase">Стратсессия</h3><p class="text-xs text-muted mt-1">120 минут</p></div>
+          <div class="mt-4 pt-3 border-t border-ink/15 text-xs font-medium text-inkSoft">Оцифровка модели и золотые задачи.</div>
+          <div class="hyp-slot mt-3 flex flex-wrap gap-1.5" data-m="h1,h2"></div>
+        </div>
+        <div class="dashed-card rounded-2xl p-5 flex flex-col justify-between">
+          <div><span class="inline-block px-2 py-0.5 rounded bg-ink text-white font-display font-extrabold text-[10px] uppercase mb-2">2 встреча • недели 2–3</span>
+            <h3 class="font-display font-black text-base uppercase">Scrum-встреча</h3><p class="text-xs text-muted mt-1">120 минут</p></div>
+          <div class="mt-4 pt-3 border-t border-ink/15 text-xs font-medium text-inkSoft">Результаты первых тестов по исходящим и снятие ограничений.</div>
+          <div class="hyp-slot mt-3 flex flex-wrap gap-1.5" data-m="h3,h4,h5"></div>
+        </div>
+        <div class="dashed-card rounded-2xl p-5 flex flex-col justify-between">
+          <div><span class="inline-block px-2 py-0.5 rounded bg-ink text-white font-display font-extrabold text-[10px] uppercase mb-2">3 встреча • неделя 4</span>
+            <h3 class="font-display font-black text-base uppercase">Команда</h3><p class="text-xs text-muted mt-1">120 минут</p></div>
+          <div class="mt-4 pt-3 border-t border-ink/15 text-xs font-medium text-inkSoft">Роли, зоны ответственности, контур качества без тебя.</div>
+          <div class="hyp-slot mt-3 flex flex-wrap gap-1.5" data-m="h7,h8"></div>
+        </div>
+        <div class="dashed-card rounded-2xl p-5 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+          <div><span class="inline-block px-2 py-0.5 rounded bg-muted text-white font-display font-extrabold text-[10px] uppercase mb-2">... встречи</span>
+            <h3 class="font-display font-black text-base uppercase">Трекинг до цели</h3><p class="text-xs text-muted mt-1">Регулярные сессии по 120 минут</p></div>
+          <div class="mt-4 pt-3 border-t border-ink/15 text-xs font-medium text-inkSoft">Контроль фокуса, цифр и барьеров роста.</div>
+        </div>
+      </div>
+
+      <!-- Инструменты трекинга -->
+      <h3 class="font-display font-black text-lg uppercase tracking-tight mt-14 mb-5 flex items-center gap-2.5">
+        <span class="w-5 h-5 rounded-full bg-accent text-white font-bold text-xs flex items-center justify-center flex-shrink-0">i</span>
+        <span>Инструменты, которые подключаются в трекинге</span>
+      </h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="dashed-card rounded-2xl p-6 sm:p-7 flex flex-col">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded bg-ink text-white">Диагностика личности</span>
+            <span class="font-display font-black text-3xl text-accent">34</span>
+          </div>
+          <h4 class="font-display font-extrabold text-base uppercase mb-2">Тест на 34 таланта</h4>
+          <p class="text-sm text-inkSoft leading-relaxed">Показывает ведущий портрет деятельности: в каких задачах ты набираешь энергию и даёшь лучший результат, а какие стоит отдать. Для тебя это прямой ответ на вопрос из разговора «должен ли я сам делать КП». По итогам раскладываем твои зоны и зоны ключевых людей команды так, чтобы роли не пересекались и не спорили за одну территорию.</p>
+          <ul class="mt-4 space-y-1.5 text-xs text-inkSoft">
+            <li class="flex gap-2"><span class="text-accent font-bold">→</span>Топ-5 талантов и зоны, которые лучше делегировать</li>
+            <li class="flex gap-2"><span class="text-accent font-bold">→</span>Карта ролей команды: кто держит структуру, кто продаёт, кто отвечает за качество</li>
+            <li class="flex gap-2"><span class="text-accent font-bold">→</span>Подсказки для найма: стратег, второй продажник, PM с арт-функцией</li>
+          </ul>
+        </div>
+
+        <div id="hronitel" class="rounded-2xl p-6 sm:p-7 bg-ink text-paper flex flex-col relative overflow-hidden scroll-mt-28">
+          <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full border border-accent/35 pointer-events-none"></div>
+          <div class="flex items-center justify-between gap-3 mb-4 relative">
+            <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded bg-accent text-white">Приложение</span>
+            <svg class="w-11 h-11 text-white" viewBox="90 85 460 495" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" aria-label="Логотип Хронителя"><path d="M320 110L118 170V330C118 440 220 520 320 555C420 520 522 440 522 330V170Z"/><path d="M320 180v38M320 422v38M164 320h40M436 320h40M242 242l156 156M398 242L242 398"/></svg>
+          </div>
+          <h4 class="font-display font-extrabold text-base uppercase mb-2 text-white relative">Хронитель</h4>
+          <p class="text-sm text-paper/80 leading-relaxed relative">Помощник, который наводит порядок в тайм-менеджменте. Несколько дней он 2–3 раза в день спрашивает, чем ты занят; отвечать можно голосом или текстом. Потом собирает картину: куда на самом деле уходит время, что из этого можно отдать и как распорядиться самым ценным ресурсом собственника.</p>
+          <div class="grid grid-cols-2 gap-3 mt-5 relative">
+            <div class="rounded-xl bg-white/5 border border-white/15 p-3.5"><p class="font-display font-black text-white text-lg">3–14 дней</p><p class="text-[11px] text-paper/65 mt-0.5">аудит времени</p></div>
+            <div class="rounded-xl bg-white/5 border border-accent/40 p-3.5"><p class="font-display font-black text-accent text-lg">8–12 часов</p><p class="text-[11px] text-paper/65 mt-0.5">в неделю план высвобождения</p></div>
+          </div>
+          <ul class="mt-4 space-y-1.5 text-xs text-paper/75 relative">
+            <li class="flex gap-2"><span class="text-accent font-bold">→</span>Диаграмма занятости и разбор дня по зонам</li>
+            <li class="flex gap-2"><span class="text-accent font-bold">→</span>Кандидаты на делегирование и рекомендации по тайм-блокингу</li>
+            <li class="flex gap-2"><span class="text-accent font-bold">→</span>Недельный план: какие часы перевести на А-клиентов</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-xl bg-white/75 border border-ink/15 px-4 py-3 flex items-center gap-3 text-xs sm:text-sm text-inkSoft">
+        <span class="w-5 h-5 rounded-full bg-accent text-white font-bold text-xs flex items-center justify-center flex-shrink-0">i</span>
+        <span>Бизнес-продюсер на связи в чате и даёт решение на запрос за 8 часов, плюс шаблоны и примеры артефактов на пути к цели.</span>
+      </div>
+    </section>
+
+    <!-- 06 ОБО МНЕ -->
+    <section id="about" data-slide="06/06" class="py-16 sm:py-20">
+      <div class="rounded-3xl bg-ink text-paper p-6 sm:p-10 lg:p-14 relative overflow-hidden shadow-xl">
+        <div class="hidden sm:block absolute -right-14 -top-14 w-64 h-64 rounded-full border border-white/10 pointer-events-none"></div>
+        <div class="hidden sm:block absolute -right-4 -top-4 w-44 h-44 rounded-full border border-accent/35 pointer-events-none"></div>
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-white/15">
+          <div class="inline-flex items-center gap-2.5 text-xs sm:text-sm text-paper/85">
+            <span class="w-5 h-5 rounded-full bg-accent text-white font-bold text-xs flex items-center justify-center flex-shrink-0">i</span>
+            <span>Система и стратегия вашего дела под творческим углом • Рост до $1 000 000+</span>
+          </div>
+          <span class="font-display font-extrabold text-xs uppercase tracking-widest text-accent">Бизнес продюсер</span>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 my-8 sm:my-10 items-center">
+          <div class="lg:col-span-7">
+            <p class="text-xs font-bold uppercase tracking-widest text-accent mb-2">Автор диагностики и трекер</p>
+            <h2 class="font-display-tight font-black text-4xl sm:text-6xl uppercase text-white">Алексей Стасюк</h2>
+            <p class="text-base sm:text-lg font-bold text-accent mt-2">CEO Big Bag Films • Бизнес-продюсер</p>
+            <p class="text-sm sm:text-base text-paper/80 mt-5 leading-relaxed">Помогаю владельцам продакшн-студий, агентств и креативных команд перейти от ручного управления и авралов к системному масштабированию. Внедрённая система управления и финансов (<strong>Habbard Management System</strong>) позволила мне выйти из операционки собственного продакшна, сформировать фонды с пассивным доходом и развивать технологические стартапы.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+              <div class="p-4 rounded-xl bg-white/5 border border-white/15"><p class="font-display font-extrabold text-[11px] uppercase tracking-wider text-paper/60">Бизнес-опыт</p><p class="font-display font-black text-xl text-white mt-1">с 2007 года</p><p class="text-xs text-paper/65 mt-1">19+ лет в продакшне и управлении командами</p></div>
+              <div class="p-4 rounded-xl bg-white/5 border border-accent/40"><p class="font-display font-extrabold text-[11px] uppercase tracking-wider text-paper/60">Средний рост</p><p class="font-display font-black text-xl text-accent mt-1">+217%</p><p class="text-xs text-paper/65 mt-1">среднее значение роста показателей кейсов клиентов</p></div>
+              <div class="p-4 rounded-xl bg-white/5 border border-white/15"><p class="font-display font-extrabold text-[11px] uppercase tracking-wider text-paper/60">Инструменты</p><p class="font-display font-black text-xl text-white mt-1">Фонды + Scrum</p><p class="text-xs text-paper/65 mt-1">прозрачная финмодель и еженедельные спринты</p></div>
+            </div>
+          </div>
+          <div class="lg:col-span-5 rounded-2xl bg-white/5 border border-white/15 p-6 sm:p-8 flex flex-col justify-between">
+            <div>
+              <h3 class="font-display font-black text-lg uppercase text-white mb-2">Следующий шаг для ШИК</h3>
+              <p class="text-xs sm:text-sm text-paper/75 leading-relaxed mb-6">Определись с формулировкой цели, прогони через калькулятор три задачи, которые лежат на тебе прямо сейчас, и напиши мне в Telegram. Разберём результат и решим, с чего начинать стратсессию.</p>
+            </div>
+            <div class="space-y-3">
+              <a href="https://t.me/bigbagfilms_ceo" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between px-5 py-4 rounded-xl bg-accent hover:bg-accentHover text-white font-display font-extrabold text-xs uppercase tracking-wider transition-all group">
+                <span class="flex items-center gap-3"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Написать в Telegram</span></span>
+                <span class="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+              <a href="https://t.me/stproducer" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-display font-extrabold text-xs uppercase tracking-wider transition-all group">
+                <span class="flex items-center gap-3"><svg class="w-5 h-5 text-accent flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span>Telegram-канал «Бизнес Продюсер»</span></span>
+                <span class="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+              <a href="#transcript" data-tr="1" class="w-full flex items-center justify-between px-5 py-4 rounded-xl bg-paper hover:bg-white text-ink font-display font-extrabold text-xs uppercase tracking-wider transition-all group">
+                <span class="flex items-center gap-3"><svg class="w-5 h-5 text-accent flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h10M7 16h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg><span>Транскрипт разговора</span></span>
+                <span>Читать ↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="pt-6 border-t border-white/15 flex flex-wrap items-center justify-between gap-3 text-xs text-paper/60">
+          <span>Конфиденциально • Подготовлено для Василия Рубана, агентство «Штольцман и Кац»</span>
+          <svg class="h-4 w-[53px] text-paper" aria-label="ШИК"><use href="#shik"/></svg>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Методика -->
+  <div id="how-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="how-title">
+    <div class="bg-paper rounded-2xl max-w-2xl w-full p-6 sm:p-8 border border-ink/20 shadow-xl">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <h3 id="how-title" class="font-display font-black text-xl uppercase">Методика скоринга</h3>
+        <button type="button" id="how-close" class="btn w-10 h-10 rounded-xl border border-ink/25 bg-white font-bold" aria-label="Закрыть">✕</button>
+      </div>
+      <div class="text-sm text-inkSoft leading-relaxed space-y-3">
+        <p>Каждый критерий оценивается по шкале 1–5, где 5 всегда «лучше для фокуса». У критериев разный вес: деньги, вероятность успеха и связь с целью весят больше, чем удобство.</p><p><strong>Вероятность успеха</strong> имеет 4 состояния: новая идея без аналогов (3–5%, ноль баллов), работает у конкурентов (~15%), подтверждена хотя бы одним платежом (55–60%), уже работает и нужно улучшить (до 85%, полный вес). 100% не бывает.</p>
+        <div id="weights" class="space-y-1.5"></div>
+        <p><strong>Итог</strong> = сумма (вес × (оценка − 1) / 4), от 0 до 100.</p>
+        <p><strong>70+</strong> золотая задача: делай сегодня. <strong>50–69</strong> в план недели. <strong>35–49</strong> отдать или отложить. <strong>до 35</strong> вычеркнуть.</p>
+        <p>Если задачу может сделать кто-то кроме тебя, при 50+ калькулятор советует поставить её с дедлайном и критерием готовности, а себе оставить приёмку. Так задача остаётся важной, а твоё время уходит на продажи А.</p>
+        <p class="text-xs text-muted">Финансовый эквивалент считается грубо: какой прирост прибыли за 12 месяцев даст задача, если сработает. Когда модель будет оцифрована, его можно брать прямо из таблицы.</p>
+      </div>
+    </div>
+  </div>
+
+<div id="tr" class="tr-ov" role="dialog" aria-modal="true" aria-labelledby="tr-title">
+ <div class="tr-bar"><a href="#" class="tr-back" id="tr-close">← К разбору</a><input id="tr-q" type="search" placeholder="Поиск: КП, рейтинг, дизайнер…" aria-label="Поиск по транскрипту"><span id="tr-cnt"></span></div>
+ <div class="tr-main">
+  <span class="text-xs font-bold uppercase tracking-widest text-accent">Штольцман и Кац • Экспресс-диагностика</span>
+  <h2 id="tr-title" class="font-display-tight font-black text-4xl sm:text-5xl uppercase mt-2 mb-4">Транскрипт разговора</h2>
+  <div class="tr-note">Автоматическая расшифровка 30-минутного созвона Василия Рубана и Алексея Стасюка, ноябрь 2026. Спикеры не размечены, текст разбит на абзацы для удобства чтения, около 6265 слов. Номер абзаца даёт ссылку на конкретное место.</div>
+  <p class="para" id="p1"><span class="pn">01</span><span class="tx">Да, у меня дела тоже хорошо. Работаем. Я, по-моему, говорил, что так случилось, что у меня команда до февраля загружена. Мне особо нечего делать. И я такой: О, мое любимое дело! Ковырятся в чужих цифрах. Как раз можно будет это поделать. Вот. И классно, что ты откликнулся: спасибо тебе, потому что я что-то, наверное, с полгода как-то не делал это в системе. Сейчас хоть вспоминаю навык и подготовился, поэтому будет полезно. Я думаю, и тебе, и мне. Ты завис? И это я завис? Вот, развис. Развис. Ладно. VPN отключал, чтобы не было интернета нестабильный. Ну да, такое время нестабильное. Услышал, что команда загружена, и ты решил поковыряться в чужих цифрах. Ага. да, да.</span></p>
+<p class="para" id="p2"><span class="pn">02</span><span class="tx">Ну вот. Ну, короче, мы сейчас с тобой будем в формате экспрессо, а это значит, что ты часть пути уже прошел с ботом. Сейчас просто доуточняю, что-то как это. Были кремниевые нейронные сети, а сейчас будут белковые, и у тебя в итоге, я надеюсь, появится такое представление. Ну, как ты написал запрос, сторонний взгляд, что тебе сторонний взгляд нужен. Это такой запрос актуальный. Нету запроса как такового. Ну, как бы, есть запрос просто бизнеса и все. Ну, не то, что бизнес, а мой запрос просто, который существует. Сторонний взгляд, наверное, надо понять в рамках чего. В рамках как зарабатывать деньги - не знаю. В рамках как позиционироваться, ну, возможно.</span></p>
+<p class="para" id="p3"><span class="pn">03</span><span class="tx">ну, вот типа я не знаю, как его у меня нету какого-то запроса, поэтому тема разговора ее надо просто определить, вопросов не то, что вопросов куча, но просто бизнесовых обычных, которые ты решаешь каждый день, а что сделать с командой, как ее расширять, а расширять через фрилансеров или расширять в штат, там, типа, потому что типа не успеваем что-то, а финансы, а как ими, типа, распоряжаться, а сколько денег надо оставлять на счету, а сколько не на счету, и так далее. Ну, они какие-то рациональные и функциональные, где мне помощь особо не нужна. Ну, как бы, то есть, ну, это бизнес-аналитика, которая спокойно можешь заниматься, а есть какие-то вот типа космические истории, ну, типа космическая история номер 1.</span></p>
+<p class="para" id="p4"><span class="pn">04</span><span class="tx">А как сделать так, блять, чтобы типа из всех агентств тебя выбирали не по цене и не по портфолио, например. Да, и вот мы там пошли Каздевица, там типа 30 Каздево сделали, и все равно я так и не нашел этого, типа, решение. То есть мы находим это решение для клиентов, для себя я его не нашел. Ну, типа, вот эта задачка, которая есть. Да, она, типа, существует. Решишь ли ты эту задачу? ну, я не знаю, не уверен. Но как бы за 30 минут там задача зарабатывать 10 миллионов чистой прибыли ну типа лично на меня в месяц. Вот это задача номер 2. Это задача бизнеса, который я, как бы, иду, и ну, как бы, и для этого я и в прорыве. Как бы, ну как бы я к ней двигаюсь. Нормально двигаемся.</span></p>
+<p class="para" id="p5"><span class="pn">05</span><span class="tx">Но опять же, типа, это вот задачка номер два. А клиенты кто мои? Типа? Надо ли сужать позиционирование? Ну блять, этих вопросов много. У меня нету на них ответа и нет вопросов, чтобы сформировать его, что мы сегодня будем обсуждать, поэтому но у меня, как этот метод-то обычный на самом деле, я тоже буду задавать вопросы и, вероятно, просто направлять внимание - куда просто потому, что маршрут сформирован. Вот не знаю, как у тебя, у меня и у моих ребят, с кем я работаю, обычно так есть какая-то колья, она неосознаваемая изначально, и идешь, и идешь по ней, потому что работает, или потому что какая-то херня кажется, там другие какие-то гипотезы, или вопросы, или вообще область внимание, кажется, какая-то тупая.</span></p>
+<p class="para" id="p6"><span class="pn">06</span><span class="tx">Но там оказываются решения, там оказывается энергия, или там оказывается самое главное - время и вот конкретные действия, которые там приводят результат. Но это же вопрос именно про того: про то, на чем ты фокусируешься, и на чем ты едешь. Вот и все. То есть, получается, если ты занимаешься операционкой, то ты клевый операционный директор. Если ты занимаешься сфокусированным на продажах, ты клевый, продажник, класса, у тебя такие клиенты тебя интересуют. Но так как ты собственник, ты по-любому всегда будешь продавать. Плохая новость, что, к сожалению, особенно в нашей сфере, где эта услуга, она ассоциирована с доверием. Тут по-любому, ну, надо просто выделить больше времени напрямую работу с новыми.</span></p>
+<p class="para" id="p7"><span class="pn">07</span><span class="tx">Я и не против, я поэтому с Ашками работаю только, и все, поэтому меня это полностью устраивает. Понял. А слушай, у тебя вот с прорывом, и после того, как с Грюбником созвонился, у тебя были какие-то перемены? После того, как с Грюбником созвонился, никаких перемен нет, и не могло быть, как мне кажется, после прорыва. Ну, это как бы типа космос. Так наверное, работает. Ну, я стал 2 раза больше денег зарабатывать за 2 месяца. Нифига. Ну, типа, это можно сказать, до этого октябрь, ноябрь, типа, до этого просто те клиенты зашли, которые не заходили. Ну, не знаю почему, но вот так получилось. Ну, а с самого прорыва не было никаких зацепок, ни с кем там не удалось даже консультации какие-то сделать или что-то такое, нет?</span></p>
+<p class="para" id="p8"><span class="pn">08</span><span class="tx">Сотни за это время, ну, сотни консультаций, экскурсий на бизнес, зумов, типа запросов отработанных, предпродаж на реальные услуги клиентам, точки развития на международной рынке, потому что у одного чувака есть что-то, а ему надо мою экспертизу и давай коллабиться. Ну, то есть лучше мыслей, ну, они просто двигаются, из той же группы, там условно два потенциальных клиента там три потенциальных клиента кому можно продать рекомендации другим там меня там наставник порекомендовал другому человеку из экспоненты вот мы с ним там уже на предконтракте установлен ну то есть ну то есть и в этом и здесь, как ну как бы, и в ифф и в деньгах, и в клиентах, ну и в мыслях типа что делать.</span></p>
+<p class="para" id="p9"><span class="pn">09</span><span class="tx">Ну и там мы же каждую неделю там созваниваемся по два раза. Там ну, всякие вопросы там, ребята, вот у меня там продажник хочет выйти, вот такие условия. Да, не шли его, нахуй, типа, бла-бла-бла, бла-бла-бла. Ну, условно, как бы, знаешь, ребята, вот у меня здесь такой вопрос: что думаете? Ну, как бы, ты просто используешь этот инструмент по максимуму, и все. Ну, то есть, ты увидел, что это комьюнити тоже работает. А грименюк нахуй не нужен. Ну, как бы вот, типа, вот очень много. Ну, то есть, скепсис по поводу типа Миши заключается в том, что Миша инфо-цыганет, и это факт: ну как бы это неизбежный факт, но при этом Миша очень грамотно придумал идею, и за счет этой модели инфо-цыганства ее раскрутил, где Миша нет.</span></p>
+<p class="para" id="p10"><span class="pn">10</span><span class="tx">Ну, то есть, Миши в моей группе нету. Ну, то есть, ладно, там есть Дима, наставник мой, который у Миши занимается, и Миши дает ему какую-то там технологию, условно говоря, по которой эти разборы там можно проводить. Да, вот здесь типа кусочек Миши есть, но это технология не мишина, это технология больших специалистов, типа психотерапевтов и бизнес-коучей, которые просто перекладываются сюда. И понятно, что если ты идешь к Мише с прицелом, типа, посмотрите, вот он - реоп там, или какие-то там курсы другие и так далее, то ты увидишь какие-то банальные вещи. А когда ты идешь в группу из 30 человек, где люди зарабатывают там по 4, по 5, по 6 миллионов рублей 30 человек, и они тебе накидывают что-то и становятся твоей компанией.</span></p>
+<p class="para" id="p11"><span class="pn">11</span><span class="tx">Ну, это вот я за этим туда пришел. Мне Миша нахер там не уперся. Да нет, я как бы Миша, спасибо, что он придумал это комьюнити и сделал вот таким дорогим, как бы, точку входа в него. А дальше мне эти люди нужны, как бы, просто и все. понял. Ну, вот скажи, пожалуйста, вот мы сейчас поговорим с тобой полчасика, и у тебя в связи с тем, какой у тебя. Все-таки запрос у тебя есть. Ты же хочешь, чтобы у тебя сформирован был такой доход и какие-то пути, или еще что-то, вот в идеале, что бы ты хотел, чтобы было финалом нашего разговора? Ну давай так, я очень сильно распыляюсь на много всего. Ну, давай, если зафиксируем, давай вот сегодня вот эту тему. Давай я очень импульсивный человек, который типа, если загорается чем-то, я могу очень быстро начать это делать.</span></p>
+<p class="para" id="p12"><span class="pn">12</span><span class="tx">Ну, типа, вот, вот, прям быстро. И из-за того, что этих мыслей очень много в голове. Я очень часто забиваю внимание на какие-то вещи, а какие-то нет. И я не понимаю, на что на чем сфокусироваться. Наверное, мысль такая, ну как бы сделать таймлайн, в котором должен быть фокус. Вот этому ты уделяешь 50 процентов времени чувак типа условно там но вот мы делаем дохуя работы и я вчера узнал что у меня девочкам типа очень сложно делать кпшки потому что мы их перемудрили и они тратят по полтора часа времени. я узнал это вчера, они а с этим работают три месяца. И вот я сам вчера сел и переделал КП-шки. Вот я должен был это делать, или не я. Мне нравится это делать.</span></p>
+<p class="para" id="p13"><span class="pn">13</span><span class="tx">Ну, типа, я уверен, что они будут заебатые, потому что я отвечаю за продажу в том числе, и забил хуй на какую-то другую задачу, а должен был я забивать на нее хуй или ну, то есть, понимаешь, да? То есть, мне прилетать, мысль типа я ее сразу начинаю реализовать. То есть, цель - 10 мультов, но к ним я могу идти. Ебать, как долго, потому что вот так вот плаваю, а могу идти вот так вот вверх и подходя на чуть-чуть. Не, с тобой согласен. Фокус решает вообще. И есть такая штука, называется приоритизация по пяти критериям, там, не знаю, слышал, не слышал. Золотые задачи еще называются. Знаешь про эту историю? Там, короче, каждую задачу можно по пяти критериям разносить: это цена ошибки, ее финансовый эквивалент, сколько эта задача может в перспективе принести, это время старта, это время не время старта, а время теста, когда ты увидишь результат, предполагаешь, что результат будет.</span></p>
+<p class="para" id="p14"><span class="pn">14</span><span class="tx">Потом системная задача или разовая, и там еще парочку критериев можно прикрутить. И какой прикол? Ты берешь, эти критерии, и тебе падает эта задача. Ты в нейронку по критериям по этим говоришь: прогони, пожалуйста, мне сейчас вот такая херня происходит. Вот моя цель - изначально вот такая, но мне сейчас вот это падает. Меня за нее браться или нет? И продолжаешь. Пока эта штука думает, она накидывает бенчмарки. И там говорит: что скорее всего, это вот это, вот это, и дает тебе скоринг. И прибирается в задачах, которые у тебя сегодня есть - в приоритете, вот такая задача. И все ты берешь и делаешь. Например, это про фокус, есть конкретный инструмент, и там нужно разбирать каждый его параметр - то есть, что есть финансовый эквивалент.</span></p>
+<p class="para" id="p15"><span class="pn">15</span><span class="tx">Например, если я сейчас повышаю, ну, то есть, у тебя же наверняка есть твоя бизнес-модель. Она как в табличке в какой-то, ну, есть же, какое-то понимание, серии - сколько лидов, там, конверсий, всякие, там, воронки, квалифицирующие, всякие элементы. Есть у тебя такое? Ну, оно есть, но оно не так зафиксировано, что прям как что-то твердое, но, безусловно, там, ну, типа, и все-сиром, и в понимании того, что происходит, конечно, есть. Ну вот, и короче, ты смотришь, допустим, вот там есть конверсия от КП до запроса. И ты говоришь: ну, не говоришь, хотя можно и нейронки сказать, вот на конверсию смотришь, которая сложилась исторически, допустим, 13%, и у тебя предположение, если я КП сделаю, девчонки смогут быстрее отвечать, а у нас в нише, например, скорость ответа она определяет.</span></p>
+<p class="para" id="p16"><span class="pn">16</span><span class="tx">Ну, то есть, можно банально обогнать конкурента по предложению, и другие рассматривать не будут, потому что оно уже ок. И, соответственно, у тебя предположение, если я на 1% выращу за счет удобного КП, скорость и качество: то сколько это денег будет? И если у тебя это в таблице отражено, если у тебя оцифрован бизнес, ты можешь увидеть прямо финансовый эквивалент. Прирост будет, там 5 миллионов, ты такой, офигеть! Я эту задачу делаю ради 5 миллионов - круто звучит, но при этом при всех остальных параметрах, например, сейчас позвонить чуваку из прорыва и не знаю, позвать его куда-то там тусить - в перспективе может дать 10 миллионов. И ты такой: так, здесь я потрачу час, здесь я потрачу день, но все равно в деньгах можно определиться.</span></p>
+<p class="para" id="p17"><span class="pn">17</span><span class="tx">И там этих критериев несколько, и скоринг тебе подсказывает. В общем, очень удобная штука. Я ей пользуюсь. Можно в Excel сделать, но сейчас в нейронках реально собираешь и просто вкидываешь как помощнику туда. И это прикольно работает. Поэтому я тебе рекомендую вот эту штуку сделать. Если тебе интересно, я про нее поподробнее тебе потом докину что-то вроде гайда, если хочешь. И сделаешь - вот, например, такая может работать история. Она прям сильно помогает. А так у тебя на самом деле можешь вот так на вскидку сказать от одного до трех ключевых факторов, что у тебя сложатся, клиенты, в нужном количестве. Ты понимаешь, на чего газовать? Давай поразмышляем.</span></p>
+<p class="para" id="p18"><span class="pn">18</span><span class="tx">Ну, давай попаду на примерах поразмышляем. Давай. У меня нет ответа на твой вопрос, потому что есть пол клиентов, которые приходят, и они должны закрыть, безусловно, базовые какие-то истории в виде цены и сроков. Да, это каких-то гигиенишки минимум. Но точка принятия решений, например, будет в релевантных кейсах, конкретно их категории. Допустим, мы делаем карма для кошек. Нам надо, чтобы у вас были карма для кошек. Такой пул есть. Небольшой процентов 6-7 таких клиентов есть. Соответственно, для них вот это будет важно. Для кого-то будет важно исключительно цена. И такие у нас тоже клиенты есть. Застройщик там, из Челябинская ребята. Все заебись, все классно.</span></p>
+<p class="para" id="p19"><span class="pn">19</span><span class="tx">Но бабок до хуя. Если вы снизите деньги, мы готовы. Окей. То есть для них гигиеничный минимум - это портфолио, имя, и так далее, а критерий самый важный - это типа бабки. Ну, как бы, вот у них типа такая же. Так. Вчера клиент позвонил, ну, типа, я съездил к ним на встречу, для них гигиеничный минимум был. Это личное присутствие. Ну, я полетел в Москву, попиздел с ними. Они записали потом голосовуху, как все охуительное прошло, какой Вася красавчик. Типа, ну прям менеджер моему написали: говорит: все, Вася продал, заебись, молодец. Мы выбираем между типа Смарт-хартом, ну, там умное сердце, там 100 сокруг, такой персонаж есть, и вась, и, и вот, и вот вам. И я такой думаю: бля, она говорит: ну, типа, потому что цены у вас одинаковые, портфолио у вас одинаковые, и мы вот пытаемся понять: ну, типа, чего-нибудь еще по какому критерию, я ей в ответ пошел: типа ребят, раз вы сравни, ну типа, раз критерии твердые для вас одинаковые, давайте нашим нечестным преимуществом будет один из твердых критериев.</span></p>
+<p class="para" id="p20"><span class="pn">20</span><span class="tx">Ну, как бы сделать лучше. И давайте у вас будет цена не такая, а такая. Проходит день, они говорят: Вась, мы выбираем вас, вот так говорит, но не потому, что ты скидку дал. Это не критерий важный. Но спасибо тебе за него. И дальше. И вот как понять, бабки для них было важно или не бабки. Потому что она же выбирала между двух и сзади ебать, как-то ты передумала, потому что на 300 тысяч стало дешевле а для кого-то важен вайб, типа вайб навстрече, когда ты не просто говорилка, а когда ты задаешь правильные вопросы и так далее, поэтому я не могу тебе ответить на вопрос: ну, типа, этих критерий много, и они у каждого клиента разные. И дальше начинается сегментация.</span></p>
+<p class="para" id="p21"><span class="pn">21</span><span class="tx">Для маркетолога, который ищет для своего босса критериям, будут охуенные кейсы и имя, потому что если она даст твоему боссу, а эти типы окажутся лохами. Ну, типа, одна будет хуйня. Для директора по маркетингу важно, чтобы не проебались сроки, потому что если проебут сроки, ее выебет начальник. А для начальника важен бабки только исключительно. Поэтому для него агентство важно, которое принесет и скажет, мы гарантируем, что мы сделаем результат. Ебать, у нас уже 20 с тобой критериев появилось. Тогда смотри, а точка входа, и как ты с этим классом А вот с этой категории работаешь? Ты же как-то с ними контактируешь? Впервые это в основном есть какие-то каналы?</span></p>
+<p class="para" id="p22"><span class="pn">22</span><span class="tx">Ну, мы да, стали задрачиваться более подробно, типа под этих клиентов типа классу А и классу Б мы готовим не просто типа коммерческого, а мы, как бы, садим стратега, который уже дает какую-то базовую информацию, которая ему могла бы быть полезна, и нам выделяла на его фоне. То есть, типа наше нечестное преимущество: не только показать цену, портфолио и сроки. Понял. Дополнительную какую-то такую штуку. И, соответственно, когда я это презентую, у него есть уже доверие, что я понял, что Ашкам очень важно погружение в их бизнес. По Каздемом, по крайней мере, на всем важно. Но просто Ашка, ну я на Ашек готов потратить это время стратегическое, а на СС-шек не готов.</span></p>
+<p class="para" id="p23"><span class="pn">23</span><span class="tx">Понял. Потому что ЦЭСКО приступник копье, как бы нахуй на нее тратить исследовательский центр, который будет ковыряться неделю, что-то делать для какошки. Поэтому как. И там моя встреча, моя презентация, подготовка к вот этой. То есть подготовка ко встрече к базовым гигиеничкам, то есть базовый гигиеничный минимум - красивая презентация, красивые подобранные правильные кейсы, цена и нормальные сроки все это гигиены. Выше это гигиены - красивая песня и подготовленный спич про конкретного клиента. Ваш как сейчас мы работаем вот в этом типа ключа.. Ну вот, не можно Сэшком просто отправляем предложение. С башками решаем, где варимся. Ну да, понимаю. Ну вот я про это и говорю: что когда ты про конкретных стал говорить, у тебя сразу сузилось количество этих критериев, на которые можно делать акцент, а получается, ЛПР-ов вы как вытаскиваете на эти там презентации или так далее.</span></p>
+<p class="para" id="p24"><span class="pn">24</span><span class="tx">То есть, у вас есть какое-то, ну, наверняка тебе цене именно с ними говорить, нежели с остальными всеми участниками процесса. Ввиду того, что они сами приходят практически все. Ну, то есть исходящие мы только не так давно начали раскручивать трафик, то по большому счету, то кт,то-то кто входящий ко мне пришел, тот для меня является ЛПР. То есть, типа, я не я не градирую его, что типа босс ты или не босс. Ну, типа, если ты пришел ко мне за запросом из сбера, значит я с тобой буду разговаривать. Не похуй, ты будешь там рядовым маркетологом или боссом, помощником Грефа. Ну ладно, вот ты перечислил эти критерии, по которым мы понимаем, что им нужно погружение в бизнес и так далее.</span></p>
+<p class="para" id="p25"><span class="pn">25</span><span class="tx">У тебя на данный момент таких клиентов сколько заходит, и какое ты видишь ограничение? То есть, как их сделать больше, или как их сделать более согласными? Вот сейчас у тебя есть какое-то базовое ощущение, где это ограничение стоит, или нет? Как их сделать больше, заключается в двух аспектах. Первый сажается исходящий чувак, и он посажен, который ищет только эти ашек. Соответственно, вот точка роста: как сделать их конкретно больше, выходить к ним с конкретными типа предложениями. Они просто здрасте, давайте поработаем. Это первое штука ограничения здесь - это время. Время подготовки на каждого клиента к этому индивидуальному предложению. Это ограничение исходящего.</span></p>
+<p class="para" id="p26"><span class="pn">26</span><span class="tx">Входящее ограничение - это сделать так, чтобы эти входящие персонажи узнали о том, что шик существует. Это ограничение входящее. ну, потому что типа Б-шки, C-шки приходят чаще, чем Aпросту, потому что у них знания про нас, например, допустим, больше, ашки меньше к нам приходят, потому что идут, не знаю, в какие-то там другие списки, рейтинги и так далее. То есть второе ограничение здесь - это знание и позиционирование, почему типа они должны к нам постучаться, а не кому-то другому. Но сейчас, когда мы стали номер 2 в Бринге - в недвиги сыпется ебать, как много недвиги ашек. Раньше такого не было никогда. Соответственно, вот мы их типа обрабатываем. Прикольно.</span></p>
+<p class="para" id="p27"><span class="pn">27</span><span class="tx">То есть, рейтинг сработал как такой генератор, да? Клево, я уже неоднократно слышу, что рейтинги супер работают. Особенно если они сами по себе классно продуманы. Вот если у них хорошо сделано именно вот это классификатор, или там в одно нажатие ты можешь найти конкретный контакт. Это клево работает. А много еще таких рейтингов, если как ты думаешь, если масштабировать именно этот канал и свой рабочий? Рейтингов много. Вопрос критериев этих рейтингов. Если мы говорим про конкретно этот рейтинг - его критерии охуенны. Они опрашивают маркетологов. Ну, как бы это главный критерий. И что маркетологи сказали, они так и говорят. Рейтинг Акары исключительно фестивальный, который очень субъективный, более субъективный, чем опрос маркетолога.</span></p>
+<p class="para" id="p28"><span class="pn">28</span><span class="tx">А как вам ценовая политика этого или этого агентства? Ты сравниваешь по ценовой политике, по твердым параметрам? А в рейтингах Акаровских, условно, говорит, я сравниваю по кейсу. Ну, бля, мне сегодня настроение небо, я не дочитал твой кейс до конца и не увидел в конце, что вы, блядь, 10 раз вырожку увеличить. Да, поставлю 2 балла. И мы не выиграли, например, какую-то награду. Такое может быть, конечно, может. Ну, я сколько раз похмелья, жюрил в фестивале, ну, не ограниченное количество раз. А таких, как я, огромное количество людей. Рейтинги рунета, блять, вообще оцениваю какую-то другую хуйню. А рейтинг бренд-хаба - это прям вообще пиздец. Где просто депо поставили себя на первое место и сказали, что вот заебись.</span></p>
+<p class="para" id="p29"><span class="pn">29</span><span class="tx">И восход, блядь, на 18-м месте, а Z-NG из Екатеринбурга на 5-м. Хотя в других во всех рейтингах восход на первом месте. Ну, типа, этой же абсурд. Ну да, странно. А эти казде вы показали, где они сами ищут себе клиентов у этих подрядчиков, как они это делают, процессор? Естественно, 99% - это типа сарафанка пошел по друзьям, и так далее. А вторая просто в любом формате - это интернет. Ну, типа в любом формате, это при том, что GPT-шек там было крайне мало в этом вопросе. Хотя опрашивали мы типа много кого ну и по общению просто даже с нарцисс нашими типа клиентами, где вы находите, и так далее. Мы даже на сайте не заходим. Агентство спрашиваем по рынку или у знакомых своих с кем вы работали?</span></p>
+<p class="para" id="p30"><span class="pn">30</span><span class="tx">Идем типа к ним, просто я сам так делал, типа я сейчас там у меня там подрядчики там по директу, подрядчики по сеу. Я даже сайты, блядь, их не видел. Я говорю, все, платите денег, полетели. Ну то есть, вот это так работает. Но когда сумма побольше, наверное, все-таки еще какие-то есть. Ну, я согласен, как бы, но для меня условно говоря, сумма 150 тысяч рублей. Месяц на одного подрядчика ну такая типа ну нормально с учетом того, что этих подрядчиков типа много. А для ком-дивелопера полтора миллиона как для меня 150 тысяч, поэтому он также же типа размышляется. Сумма суммы разная, а ценность одна и та же. Сейчас вот пока что я слышу то, что ты говоришь, надо масштабировать именно за счет прозвона.</span></p>
+<p class="para" id="p31"><span class="pn">31</span><span class="tx">А ты знаешь, кому звонить? Ну, то есть, где эту базу брать, как прибираться, фильтровать, как понять, именно где наш клиент, где нет, как повысить собственный шанс, чтобы конвертить конверсию. Во-первых, мы вот сейчас мы купили базу из 200 компаний, ашек с именами, маркетологами топовых компаний, которых мы сами проработаем. Вторая штука - это у нас есть база одного чувачка, который может лично познакомить с определенным количеством типа этих, и он говорит: давайте по каждому из них подготовим некий типа план - это вторая, как бы база, третья - это у нас есть там отвалы за последние несколько лет, которые мы просто гигиенически сейчас обработать.</span></p>
+<p class="para" id="p32"><span class="pn">32</span><span class="tx">Ну, как минимум, просто узнать, как у них типа дела. И четвертое, это есть те, кто с нами поработал, из-за последние там полтора года не работал с нами, которых тоже надо поговорить с ними и обсудить, как типа у них дела. Круто. Круто. У тебя так много идей, а есть кому это делать? Да, я нанял как раз. Ну, как бы вот если с точки зрения исходящих продаж, я нанял чувачка, который сейчас этим занимается. И вот прямо сейчас есть второй чувачок, который тоже хочет работать. Я просто пытаюсь понять, нужен ли он мне или не нужен. Потому что если мы говорим про детальную проработку, условно говоря, этих ашек, я с двумя продажниками не справлюсь. Ну, то есть, это надо будет отдельно брать еще стратега, который будет дополнительно, как бы это делать.</span></p>
+<p class="para" id="p33"><span class="pn">33</span><span class="tx">Мы сейчас все с Иишкой задрачиваем, ее уже там месяц и подготовим в финале типа штуку, которая нам будет в этом помогать. И вот когда мы ее задрочим, тогда я найму второго чувачка, чтобы под него это работало. Потому что без этого это будет перебор. Плюсом, ко всему, у нас есть магазин идей, сотни идей непроданных, с которыми можно приходить к любому из этих ашек и говорить: ребят, нихуя, вы новый дом строите. Бля, у нас загашник есть. Давайте просто покажем вам прикольные названия. Ну, просто посмотрите, типа, какие названия, как бы, у нас есть. Ну, мало ли вашу концепцию, типа, пишется. Понятно, что мы бриф не видели. Оп, точка контакт. Платно показали, рассказали там.</span></p>
+<p class="para" id="p34"><span class="pn">34</span><span class="tx">А дачу можно типа беседу. Бля, ничего не подошло, хуево. Давайте мы придумаем новое тогда. Ну, круто. Вот сейчас после тебя у меня встреча по поводу магазина идей, определение для кого с кем, куда мы идем. Ну, с одним чувачком. Так сделаем через нижнюю эту хуйню, найму второго и полетит второй. Понятно. Ну, вот такое ощущение, что у тебя все в порядке, и ты прогнозируешь, что в следующем месяце у тебя выполнится план, да или нет? У меня была мысль такая, что мне надо 100 50 лидов за три месяца сформировать. Обычно у меня в году было 200 лидов. 200 лидов. Прорыв мне сказал, что тебе надо за 3 месяца, даже меньше, типа, сделать условно четверть своих типа ледов.</span></p>
+<p class="para" id="p35"><span class="pn">35</span><span class="tx">Ну они вот сделаны. Это только на входящих. А типа. А сейчас исходящие, типа пошли. Ну, то есть, вот мой критерий, сейчас просто работай, Вась. Вот это вот что надо делать. Все. Больше не надо делать. Ну, просто надо работать. Звучит так, как будто Ну, я почему задал этот вопрос? И ты от него ушел: что ты прогнозируешь, что у тебя будет выручка, ту, которую ты себе поставил, или чувствуешь, что что-то, наверное, не будет? Давай так, в декабре я думаю, что чистая прибыль будет такая, которую я себе хочу. Но это только в декабре. А дальше, ну как бы, потому что я понимаю, что у меня заходы и пост оплаты придут к этой цели. Хотя никогда в жизни не приходили, а может и не придут, я не знаю.</span></p>
+<p class="para" id="p36"><span class="pn">36</span><span class="tx">Ну, мы никто ничего не знаем, конечно. А у тебя готова финансовая служба, к тому, как наплыв пойдет, заказов? Там же будут все равно пост оплаты и оборотки надо, миллионов 40 где-то да нет ну типа в этом-то и прикол что у меня все работает в штате и все эти позиции можно закрыть ну плюс-минус даже тем же типа штатом той же команды которая как бы есть сейчас. плюсом ко всему, я весь прошлый месяц занимался поиском дизайнеров дополнительных. У меня там 200 дизайнеров сидит, ждет ответов. Я их открыль трава. У нас там есть пятеро, которых, типа, вот просто завтра бери, и они продолжают, типа, работать и просто вот завтра мы садимся и обсуждаем кого мы берем и берем ли мы это тоже бизнес-модель а брать в штат или нахуй их брать в штат и брать под проект но типа в базе в штате есть ребята там четыре дизайнера пусть остальные типа не в штате: так надо сделать или не так?</span></p>
+<p class="para" id="p37"><span class="pn">37</span><span class="tx">Дешевле в штат, потому что, типа, стоимость условно, ну, допустим, 150 тысяч рублей за дизайнера в штате лучше, чем платить этому же дизайнеру по 80 тысяч за проект. Потому что он может сделать три проекта в месяц, а тут за 80 он сделает только два, и это будет уже 106. Ну, понял. Просто надо финансово посидеть и подумать, как лучше сделать. А может быть, похуй не держать их штате, реально, и башить, типа. Вот так. Ты знаешь, как это сделать? Ну, типа, как эту модель нарисовать, чтобы она сама показывала тебе результаты итоги прогнозов? Пока это только интуитивная штука - какого-то четкого плана нет. И не знаю как. Ну, просто по интуиции могу представить себе, как это можно сделать, но сесть, порисовать что-нибудь.</span></p>
+<p class="para" id="p38"><span class="pn">38</span><span class="tx">Понял. Вот сейчас последний вопрос тебе задам, и если тебе нужно будет, я дам какое-то свое ревью в итоге. А потом у тебя спрошу. Последний вопрос звучит так: есть сейчас что-то, что тебя особенно бесит в работе? И если это убрать, то вообще классно, все полетит. Ну, у меня начала бесить из-за того, что произошел некий рост то, что дизайнеры могут, например, проекты не выдаются с таким же качеством, как выдавались, типа до и меня бесит, что мне приходится в это залазить и понять: блять, ну типа, когда нету работы, все хуево. Когда есть работа, все хуево. вот меня это крайне раздражает вот предсказуемости типа в дизайнерской работе как будто она меня напрягает и есть и решение этому всему увеличить стоимость услуги и не три дизайнера, чтобы делали каждый по одному варианту, чтобы пять делали или шесть.</span></p>
+<p class="para" id="p39"><span class="pn">39</span><span class="tx">И тогда у тебя будет сразу выбор: Ну ладно, это хуйня, и ничего в этом страшного, типа нет, что это хуйня. Потому что у меня есть других тоже. Ну да, интересно. Тоже разные модели, как можно решить эту задачу. Но это самое бесячие у тебя сейчас, да? То есть то, что. Меня бесит это, что меня прям бесит. То, что меня мотивирует, это то, что у меня мало продаж, как мне кажется. Что у нас не такая большая конверсия, как мне хотелось бы. Что не так быстро заходят клиенты, как мне хотелось бы. Но это рабочие процессы, который как бы они меня не бесит а бесит меня сейчас вот именно это потому что у меня есть конкретные штуки которые меня триггерят которые мешают мне наслаждаться работой и думать над развитием а я должен откатываться в операционку и обсуждать, какого хуя вы здесь такую букву А сделали, а не такую, например.</span></p>
+<p class="para" id="p40"><span class="pn">40</span><span class="tx">Ну, как бы, это меня откровенно весит. Ну да, я понял. Окей. Давай, тебе нужен, нужно поддержать тебя, или тебе дать совет, что бы я делал на твоем месте, или у меня не хватает тех, кто меня поддерживает. Окей, тогда, если позволишь, я тебе скажу: вот как я чувствую, вижу: исходя из той инфы, что есть, у меня есть ощущение, что если у тебя будет все цифровизовано, то есть у тебя будет как условный, ну не дашборд, назовем это, ну хотя бы табличка в Excel, где ты понимаешь, где ты можешь что-то поуправлять, подвигать и посмотреть, что будет, ну, исходя из гипотез, каких-то предположений, изменений, модели и так далее, то тебе будет легче. Тебя это не будет так фрустрировать из серии: блин, сколько задач валиться, на чем мне фокусироваться.</span></p>
+<p class="para" id="p41"><span class="pn">41</span><span class="tx">Я вижу также, что тебе нужно с этой пожить историей о золотых задачах - приоритизации по скорингу. Я тебе могу табличку скинуть, ты просто попробуешь с ней сам разобраться, если нужно будет, я подключусь. Вот. И я вижу также, что с командой это всегда проблема. Боль роста всегда упираются в команду. Ко мне приходили ребята из Instory: знаешь, это типа как конкурент Canвы по созданию шаблонов, там как stories делать, эти коруссии и так далее. Мы с ними работали в трекинге, и у нас задача была только про команду: то есть он говорит: мне модель понятна, у меня все там с деньгами ясно. Мне вот эти короче никак не могут там подружиться. У нас масста нет, мотивация, что делать.</span></p>
+<p class="para" id="p42"><span class="pn">42</span><span class="tx">Вот, и мы просто разбирали каждого конкретно человека размещали их там на борде, смотрели сильные слабые стороны, где у них искрит, и пересобрали так механику и их скиллы, что они по сути не пересекали. У них ушел конфликт, у них перестало уходить вот эта творческая энергия, каждый стал заниматься своим, и у них достаточно хорошо все выровнялось, потому что у них, по сути, была внутренняя борьба за власть. А когда они все получили по куску, у них стало легче. Но это у них был кейс такой, и мы его конкретно решали. Поэтому я думаю, что если в команде тоже поперебирать, мы шли гипотезами: что если так, если так, если так, через разговоры, через пробы и ошибки - и в итоге пришли к лучшему результату.</span></p>
+<p class="para" id="p43"><span class="pn">43</span><span class="tx">Вот. Я думаю, что тебе тоже надо идти таким путем. Ну, как будто сейчас на поверхности я не знаю, это Project Manager с функцией Rdirection, которая чуть-чуть насмотренность умеет. Но что-то мне подсказывает, что ты не отпустишь Rdirection. Тебе хочется самому пропускать через себя, да? Я очень много пропускаю. Просто тогда, когда ко мне приходят исполнительные директор, который коммуницирует с ардиром и так далее, и показывает, например, что-нибудь такое, блядь, что-то я не уверен. Я вам не показываю, да, тобой согласен. Типа, ну, нас сходится типа взгляд, типа, да, здесь что-то не так. Типа, тогда да. А по партии Раньше я лез на процентов на 80 больше, я сейчас очень сильно отпустил, типа эту штуку, и креатив в том числе.</span></p>
+<p class="para" id="p44"><span class="pn">44</span><span class="tx">круто. Систематизация точно? Ну, типа, систематизация, да, она у меня и есть, как бы, и в планах, и в голове, мне не хватает типа, структурности того, чего типа я вижу, и так далее. Но при этом я не понимаю, как эту структурность добиться с точки зрения той же самой среднего человека того. Ну, потому что типа средний чек общий, там, условно, 800, но это ни хуя, не 800. Потому что сегодня может прийти чувак, только купить нейм за 350, и его средний чек - это один средний чек. А завтра может прийти какой-нибудь девелопер, который комплексный брендинг за 5 миллионов покупает. И как можно устранить этот и этот клиент? Ну, как бы это не средние чеки между ними, а классические все модели сравниваю средний чек вот так.</span></p>
+<p class="para" id="p45"><span class="pn">45</span><span class="tx">Годовая типа установленного выручка и поднес средний чек. Нет, так можно, но это тебя будет путать, то есть тебе нужно сделать продуктовую матрицу и через задачу по услугам, конечно, средний чек по услуге должен быть. Да, нам это сильно помогло. Типа, мы сфокусировались на конкретных двух продуктах, и у нас скорее всего год будет рекордный. То есть, я думаю, что это правда хорошая история. Вот, надо просто так же: я понимаю, что мне надо просто делать, ну, типа, один из продуктов, который надо продать всегда, это комплексный брендинг. Все, на нем надо делать акцент, но надо делать и его продавать и его пушить, потому что, типа, найти чуваков, которые там строят дом или, скоро будут выводить какой-то продукт, и так далее, гораздо проще.</span></p>
+<p class="para" id="p46"><span class="pn">46</span><span class="tx">Потому что они говорят: мы купили завод, скоро будет охуенно, все к нему идти, блядь, и башки, боево. А просто искать одного, кому нужен рекламный креатив или кому нужен дизайн типа упаковки отдельно, но, блять, во-первых, это копейки, ну, как бы относительно массы, а во-вторых, 10 дизайнов упаковки будут равны одному комплексному брендингу. Так а нахуй эти 10 дизайнов упаковки там нужны, ну, как бы это же бренд. По этому 100 пуду комплексный брендинг. Ну, мы как бы сейчас не будем опираться. И, блядь, а дальше появляется? А чтобы был комплексный бренд, значит, кейсы должны оформлены как комплексный бренник. А чтобы все кейсы были должны оформлены как комплексный бренник, надо внешний образ изменить.</span></p>
+<p class="para" id="p47"><span class="pn">47</span><span class="tx">Ну, типа, раз мы все хотим продавать дороже, значит, мы внешние сами должны вылететь ахуительно, они так, как сейчас. Мы сейчас красивые, нормальные ребята. А я хочу, чтобы мы выглядели охуеть, чтоб типа ты смотришь и думать, ебать, это что за агентство? Ну я тут с тобой бы поспорил, если бы мы с тобой в трекинге работали, я бы тебе остановил и сказал бы, что самый простой способ саботировать задачу - искать в ней идеальное решение. Ну, то есть, лучше попытками: типа, сначала мы делаем в один гигинический минимум фокус, и там типа сдвиг делаем, потом в другой, в другой, и потом смотрим, что лучше сработало. А потому что ты утонешь, если все критерии будешь выполнять.</span></p>
+<p class="para" id="p48"><span class="pn">48</span><span class="tx">У тебя опять это сработало? Раз фокус, блин. Да. Ну, реально, есть такое. Ну, окей. Короче, я хочу, чтобы ты дал какую-то обратную связь. Есть ли у тебя какие-то приобретения от сегодняшнего созвона? И что ты вообще думаешь? Слушай, дай мне время, ну, переспать с этой штукой, потому что я так сходу тебе с нахлеста ничего такого не схожу. С этой любом случае, штукой надо подумать. Ты пришли транскрибацию, я ее грузану своего помощника, посижу с ним по кумекаю, дашь мне эти две штуки, которые обещал по поводу трекинга и так далее. Я тоже их посижу, посмотрю и навернусь тебе собрать на связи, чтобы она была конструктивная, а не просто хуйня, хуйня. Нет, ну вот ты сейчас со мной в разговоре, и ты, например, что-то подхватил, что-то хочешь забрать сегодня?</span></p>
+<p class="para" id="p49"><span class="pn">49</span><span class="tx">Там попробовать или по новой из-за этого структурность типа ну, типа, я у меня в голове. Типа, я, я очень эмоциональный чувак, и я всю дорогу хочу все, чтобы по полочкам у меня лежало. Ну, ты эту гипотезу подтвердил. Она мне тоже нравится, эта гипотеза. Я тебе не говорил про эту штуку, но вход моих мыслей, видимо, дает понимание, что это типа надо. А она у меня в голове и так есть. Я все хочу супер структурировать. Хотя мне на порыве сказали, что такой хуйнью заниматься нельзя, потому что если ты все структурируешь, то ты убьешь креативную основу типа себя. Тебе станет хуево, типа от этого. Так тебе не надо просто это дальше подбежно запустить процесс, но поддерживать должен не ты структуре, у тебя же есть исполнительный директор, ну и она разорвется - это надо отдельно.</span></p>
+<p class="para" id="p50"><span class="pn">50</span><span class="tx">У меня для этого тоже есть решение. То есть, у меня это помогает делать бизнес-ассистент. Такой многофункциональный, как-то. Мы его называем бизнес-маской. Где чего неплохо работает, она там делает, забирает. Это да, это точно такой человек. Ну, человек или не человек, такая штука нужна. Робопес. Надеюсь, нет. Ну да, это прикольно, если ты найдешь такого помощника, потому что, похоже, сильная сторона у тебя это вот обаять, ты невероятно харизматичный. Скорее всего, влюбляются в тебя с первого контакта, особенно физического. Поэтому тебя, конечно, клиента надо прибывать, тебе надо тусить, короче, тебе надо прямо в процессе креативить, накидывать, и вот чтобы у тебя там фоном твоя команда подхватывала эти зацепки, и дальше уже рассказывать за тобой.</span></p>
+<p class="para" id="p51"><span class="pn">51</span><span class="tx">Это конечно идеально. Мне кажется, получается, я и это делаю, и потом сейчас встречу через минуту у меня думать о том, как мы будем продавать исходящие. Вот мы сейчас будем сидеть и обсуждать. с хуев. Я это должен делать, непонятно. Ну, пока так. Ну, лучше надо настроить. Надо настроить и все, и дальше пусть он идет по накатке. Да. Ну ладно, рад, что ты уделил этому время. Я к тебе вернусь с какими-то штучками ценными Давай. Давай. Спасибо тебе. Пока-пока. Пока.</span></p>
+ </div>
+</div>
+<script>
+{
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- Гипотезы ---------- */
+const HYP=[
+ {id:'h1',tag:'focus',label:'Фокус',title:'Каждая новая идея проходит фильтр до старта',body:'Ты быстро загораешься и сразу делаешь, поэтому путь к 10 млн идёт волной. Пример с КП: правильная по сути задача, но вопрос в том, должен ли был её делать собственник и в какой день.',check:'Неделю прогонять через калькулятор каждую задачу, которая «прилетела». Посчитать, сколько из них ушли в «отдать» и «вычеркнуть».'},
+ {id:'h2',tag:'focus',label:'Цифры',title:'Оцифрованная модель снимает фрустрацию',body:'Модель сейчас «в голове и в CRM». Общий средний чек 800 тыс ничего не говорит: нейминг за 350 тыс и комплекс за 5 млн живут в разных экономиках. Нужна продуктовая матрица со средним чеком и конверсией по каждой услуге и сегменту A/B/C.',check:'Собрать таблицу: услуги × сегменты × лиды × конверсия × чек. Двигать конверсию на 1% и видеть, сколько это денег приносит.'},
+ {id:'h3',tag:'sales',label:'Продукт',title:'Комплексный брендинг как якорь',body:'Десять упаковок по деньгам равны одному комплексному бренду, а находить тех, кто строит дом или запускает завод, проще. Отсюда кейсы, оформленные как комплекс, и образ агентства для чека 5 млн+.',check:'Собрать прототип продукта без глубокой проработки. Определить 20% его характеристик, которые дадут 80% убедительности для нового клиента, остальное отложить до первых результатов.'},
+ {id:'h4',tag:'sales',label:'Канал А',title:'Рейтинг с опросом маркетологов работает как генератор',body:'После №2 в рейтинге пошла недвижимость класса А. Критерии этого рейтинга ты ценишь, фестивальные и рейтинги «по кейсам» нет. Похоже, у агентства есть системный входящий канал, который можно масштабировать.',check:'Сколько лидов и денег дал рейтинг за квартал. Есть ли ещё 1–2 рейтинга с похожей методикой в соседних отраслях.'},
+ {id:'h5',tag:'sales',label:'Исходящие',title:'Ограничение исходящих: время на персональный заход',body:'Баз четыре: 200 купленных А-компаний, интро от партнёра, отвалы, спящие клиенты. Узкое место ты назвал сам: подготовка индивидуального предложения под каждую Ашку. Магазин идей с сотнями непроданных неймов может стать быстрым поводом для первого контакта.',check:'Прогнать все 4 базы через <a href="#focus" class="text-accent font-semibold underline underline-offset-2">калькулятор фокуса</a> ниже и начать с той, что наберёт больше баллов. Второго продажника брать, когда ИИ-инструмент готов.'},
+ {id:'h7',tag:'team',label:'Качество',title:'Контур качества должен работать без тебя',body:'С ростом дизайнеры просели, и ты снова в правках по букве А. Варианты: PM с функцией арт-дирекшна; больше параллельных вариантов от 5–6 дизайнеров при росте цены; модель штат или проект. Штатный за 150 тыс при трёх проектах выходит 50 тыс на проект против 80 тыс у фрилансера; окупается уже с двух проектов в месяц.',check:'Посчитать загрузку каждого дизайнера за квартал, для этого достаточно простой таблицы. Решить, кто из пяти готовых кандидатов идёт в штат, а кто под проект.'},
+ {id:'h8',tag:'team',label:'Роль',title:'Твоя сильная сторона продаёт, структуру держат другие',body:'На встречах ты обаяешь и продаёшь, клиенты записывают голосовые о том, как прошло. Структуру и регулярность при этом лучше отдать исполнительному директору и бизнес-ассистенту, а где на самом деле уходит твоё время, покажет <a href="#hronitel" class="hr-link">Хронитель</a>. И осторожно с идеалом: самый простой способ саботировать задачу это искать для неё идеальное решение. Двигай один гигиенический минимум за раз.',check:'<a href="#hronitel" class="hr-link">Хронитель</a> покажет, сколько часов в неделю реально уходит на встречи с А. Цель: перевести туда 8–12 часов.'}
+];
+let hypOn=store.get('shik_hyp',{}),hypF='ALL';
+function renderHyp(){
+ $('hyp-grid').innerHTML=HYP.filter(h=>hypF==='ALL'||h.tag===hypF).map((h,i)=>{const on=!!hypOn[h.id];return `
+ <article class="dashed-card rounded-2xl p-6 flex flex-col justify-between ${on?'!border-accent !bg-white/85':''}">
+  <div>
+   <div class="flex items-center justify-between gap-2 mb-3">
+    <span class="font-display font-black text-2xl text-accent">H${HYP.indexOf(h)+1}</span>
+    <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded ${h.tag==='team'?'bg-accent':'bg-ink'} text-white">${h.label}</span>
+   </div>
+   <h4 class="font-display font-extrabold text-base uppercase mb-2">${h.title}</h4>
+   <p class="text-sm text-inkSoft leading-relaxed">${h.body}</p>
+  </div>
+  <div class="mt-4">
+   <div class="bg-paper/90 rounded-xl p-3 text-xs border border-ink/10"><span class="font-display font-extrabold uppercase block mb-1">Как проверить</span><span class="text-inkSoft">${h.check}</span></div>
+   <button type="button" data-h="${h.id}" aria-pressed="${on}" class="hbtn btn mt-3 w-full px-4 py-2.5 rounded-xl text-xs font-display font-extrabold uppercase tracking-wider transition-colors ${on?'bg-accent text-white':'bg-white/80 border border-ink/25 hover:border-accent'}">${on?'✓ Беру в работу':'Взять в работу'}</button>
+  </div>
+ </article>`}).join('');
+ document.querySelectorAll('.hyp-slot').forEach(sl=>{sl.innerHTML=sl.dataset.m.split(',').map(id=>{const h=HYP.find(x=>x.id===id);if(!h)return'';const n=HYP.indexOf(h)+1,on=!!hypOn[id];
+  return `<a href="#hypotheses" class="chip ${on?'bg-accent text-white':'bg-paperDark text-muted border border-dashed border-ink/25'}" title="${h.title}">${on?'✓ ':''}H${n} ${h.label}</a>`}).join('')});
+ document.querySelectorAll('.hf').forEach(b=>{const a=b.dataset.f===hypF;b.className='hf btn px-3.5 py-2 rounded-xl text-xs font-display font-extrabold uppercase whitespace-nowrap transition-all '+(a?'bg-ink text-white':'bg-white/80 border border-ink/20 hover:border-accent')});
+}
+$('hyp-grid').addEventListener('click',e=>{const b=e.target.closest('.hbtn');if(!b)return;hypOn[b.dataset.h]=!hypOn[b.dataset.h];store.set('shik_hyp',hypOn);renderHyp()});
+document.querySelectorAll('.hf').forEach(b=>b.addEventListener('click',()=>{hypF=b.dataset.f;renderHyp()}));
+renderHyp();
+
+/* ---------- Калькулятор ---------- */
+const CRIT=[
+ {k:'money',name:'Финансовый эквивалент',hint:'Сколько прибыли за 12 месяцев даст, если сработает',w:25,opts:['до 100 тыс','100–500 тыс','0,5–2 млн','2–5 млн','5 млн+']},
+ {k:'prob',name:'Вероятность успеха',hint:'Насколько идея уже подтверждена',w:15,vals:[1,2,4,5],badges:['3–5%','~15%','55–60%','до 85%'],opts:['Новая идея, аналогов нет','Работает у конкурентов','Подтверждена хотя бы одним платежом','Уже работает, нужно улучшить']},
+ {k:'goal',name:'Вклад в фокус-цель',hint:'Двигает ли к А-клиентам и комплексному брендингу',w:15,opts:['Не связано','Слабо','Косвенно','Заметно','Прямо']},
+ {k:'test',name:'Время до теста',hint:'Когда увидишь, работает или нет',w:15,opts:['Квартал+','Месяц','2 недели','Неделя','1–2 дня']},
+ {k:'sys',name:'Системность',hint:'Разово или будет работать дальше без тебя',w:10,opts:['Разовая','Редко нужна','Повторяется','Процесс','Система без меня']},
+ {k:'risk',name:'Цена ошибки',hint:'Что потеряешь деньгами и репутацией, если не выйдет',w:10,opts:['Критично','Высокая','Средняя','Низкая','Почти ноль']},
+ {k:'cost',name:'Твоё время',dname:'Твоё время на постановку и приёмку',hint:'Сколько часов собственника съест',dhint:'Делегирование тоже съедает часы на постановку и согласование',w:10,opts:['Неделя+','2–3 дня','День','2–4 часа','До часа']}
+];
+const blank=()=>({name:'',money:3,prob:2,goal:3,test:3,sys:3,risk:3,cost:3,deleg:false});
+const toIdx=(c,v)=>c.vals?Math.max(0,c.vals.indexOf(v)):Math.max(0,v-1);
+const toVal=(c,i)=>c.vals?c.vals[i]:i+1;
+const optLabel=(c,i)=>(c.badges?c.badges[i]+' • ':'')+c.opts[i];
+let cur=blank();
+$('crit-list').innerHTML=CRIT.map(c=>`
+ <div>
+  <div class="flex flex-wrap items-baseline justify-between gap-x-3"><label for="r-${c.k}" class="text-sm font-bold" id="cn-${c.k}">${c.name}</label><span class="text-sm font-display font-extrabold text-accent text-right" id="cv-${c.k}"></span></div>
+  <span class="text-[11px] text-muted block mb-1" id="ch-${c.k}">${c.hint}</span>
+  <input type="range" class="rng" id="r-${c.k}" data-k="${c.k}" min="0" max="${c.opts.length-1}" step="1" value="0" />
+  <div class="ticks" aria-hidden="true">${c.opts.map(()=>'<span></span>').join('')}</div>
+  <div class="flex justify-between gap-4 text-[11px] text-muted mt-1"><span>${c.opts[0]}</span><span class="text-right">${c.opts[c.opts.length-1]}</span></div>
+ </div>`).join('');
+$('weights').innerHTML=CRIT.map(c=>`<div class="flex items-center gap-3 text-xs"><span class="w-44 flex-shrink-0 font-semibold">${c.name}</span><span class="flex-1 h-2 bg-paperDark rounded-full overflow-hidden"><span class="block h-full bg-accent" style="width:${c.w/25*100}%"></span></span><span class="w-10 text-right tabular-nums font-bold">${c.w}%</span></div>`).join('');
+
+function score(t){let s=0,filled=0;CRIT.forEach(c=>{if(t[c.k]){filled++;s+=c.w*(t[c.k]-1)/4}});return{s:Math.round(s),filled}}
+function verdict(s,deleg){
+ if(s>=70) return deleg?{tag:'Золотая • отдать',title:'Поставь задачу сегодня',text:'Задача важная, но твоё участие не нужно. Поставь её с дедлайном и критерием готовности, себе оставь приёмку результата.',c:'#007AFF'}:{tag:'Золотая',title:'Делай сегодня сам',text:'Деньги, скорость и связь с целью сходятся. Освободи под неё ближайший блок времени.',c:'#007AFF'};
+ if(s>=50) return deleg?{tag:'Важная • отдать',title:'Делегируй в план недели',text:'Полезная задача, которую может закрыть команда. Назначь ответственного и проверь на ближайшей планёрке.',c:'#111111'}:{tag:'План недели',title:'Поставь в спринт',text:'Задача стоит времени, но сегодня есть дела важнее. Запланируй конкретный слот на неделе.',c:'#111111'};
+ if(s>=35) return {tag:'Отложить',title:deleg?'Отдать без контроля':'В бэклог',text:'Вклад в цель небольшой. Если загорелся, запиши идею и вернись к ней, когда закроешь золотые задачи.',c:'#555555'};
+ return {tag:'Вычеркнуть',title:'Не делать',text:'Мало денег, далеко от цели и долго ждать результата. Это та самая волна, которая уводит от 10 млн.',c:'#9A968C'};
+}
+function paint(){
+ const {s,filled}=score(cur);
+ CRIT.forEach(c=>{const r=$('r-'+c.k),i=toIdx(c,cur[c.k]);r.value=i;r.style.setProperty('--p',(i/(c.opts.length-1)*100)+'%');const l=optLabel(c,i);$('cv-'+c.k).textContent=l;r.setAttribute('aria-valuetext',l)});
+ $('deleg').setAttribute('aria-checked',String(cur.deleg));
+ CRIT.forEach(c=>{if(c.dname){$('cn-'+c.k).textContent=cur.deleg?c.dname:c.name;$('ch-'+c.k).textContent=cur.deleg?c.dhint:c.hint}});
+ $('score').textContent=filled?s:0;
+ const g=$('gauge');g.style.strokeDashoffset=314.16*(1-(filled?s:0)/100);
+ if(filled<CRIT.length){
+  $('verdict-tag').textContent=filled+' из '+CRIT.length;$('verdict-tag').style.background='#111';
+  $('verdict-title').textContent='Отметь все критерии';$('verdict-text').textContent='Пока оценка неполная, итог занижен. Осталось критериев: '+(CRIT.length-filled)+'.';g.style.stroke='#B9B4A8';
+ }else{const v=verdict(s,cur.deleg);$('verdict-tag').textContent=v.tag;$('verdict-tag').style.background=v.c;$('verdict-title').textContent=v.title;$('verdict-text').textContent=v.text;g.style.stroke=v.c}
+ $('breakdown').innerHTML=CRIT.map(c=>{const pts=cur[c.k]?c.w*(cur[c.k]-1)/4:0;return `<div class="flex items-center gap-2 text-[11px]"><span class="w-32 flex-shrink-0 text-muted truncate">${c.name}</span><span class="flex-1 h-1.5 bg-paperDark rounded-full overflow-hidden"><span class="block h-full bg-ink" style="width:${pts/c.w*100}%"></span></span><span class="w-12 text-right tabular-nums font-bold">${Math.round(pts)}/${c.w}</span></div>`}).join('');
+}
+$('crit-list').addEventListener('input',e=>{const r=e.target.closest('input[data-k]');if(!r)return;const c=CRIT.find(x=>x.k===r.dataset.k);cur[c.k]=toVal(c,+r.value);paint()});
+$('deleg').addEventListener('click',()=>{cur.deleg=!cur.deleg;paint()});
+$('task-name').addEventListener('input',e=>{cur.name=e.target.value});
+
+/* ---------- Список задач ---------- */
+const EXAMPLES=[
+ {name:'Переделать шаблон КП',money:3,prob:5,goal:3,test:4,sys:4,risk:4,cost:4,deleg:true},
+ {name:'Персональный заход к Ашке из базы 200 компаний',money:5,prob:4,goal:5,test:3,sys:2,risk:4,cost:3,deleg:false},
+ {name:'Встреча с ЛПР девелопера, пришедшего из рейтинга',money:5,prob:4,goal:5,test:4,sys:1,risk:4,cost:4,deleg:false},
+ {name:'Довести ИИ-инструмент подготовки заходов к А',money:4,prob:2,goal:5,test:2,sys:5,risk:4,cost:2,deleg:true},
+ {name:'Посчитать модель: дизайнеры в штат или под проект',money:3,prob:4,goal:3,test:4,sys:4,risk:3,cost:4,deleg:true},
+ {name:'Сразу полностью переупаковать образ агентства',money:4,prob:1,goal:4,test:1,sys:3,risk:2,cost:1,deleg:false},
+ {name:'Самому поправить макет дизайнера под сдачу',money:1,prob:5,goal:1,test:5,sys:1,risk:3,cost:4,deleg:true}
+];
+let tasks=store.get('shik_tasks_v2',null)||EXAMPLES.map(t=>({...t,ex:true}));
+let editIdx=-1;
+function renderTasks(){
+ store.set('shik_tasks_v2',tasks);
+ const sorted=tasks.map((t,i)=>({t,i,s:score(t).s})).sort((a,b)=>b.s-a.s);
+ if(!sorted.length){$('task-list').innerHTML='<li class="dashed-card rounded-xl p-5 text-sm text-muted text-center">Список пуст. Оцени задачу выше и добавь её сюда.</li>';return}
+ $('task-list').innerHTML=sorted.map(({t,i,s},n)=>{const v=verdict(s,t.deleg);return `
+ <li class="dashed-card rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 ${editIdx===i?'!border-accent':''}">
+  <span class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-display font-black text-lg text-white tabular-nums" style="background:${v.c}">${s}</span>
+  <button type="button" data-load="${i}" class="flex-1 text-left min-w-0">
+   <span class="block font-semibold text-sm leading-snug">${esc(t.name||'Без названия')}</span>
+   <span class="block text-[11px] text-muted mt-0.5">${v.tag}${t.ex?' • пример из разговора':''}</span>
+  </button>
+  <button type="button" data-del="${i}" class="btn w-10 h-10 flex-shrink-0 rounded-lg border border-ink/15 bg-white/70 hover:border-ink text-muted" aria-label="Удалить задачу">✕</button>
+ </li>`}).join('');
+}
+$('task-list').addEventListener('click',e=>{
+ const d=e.target.closest('[data-del]');if(d){const i=+d.dataset.del;tasks.splice(i,1);if(editIdx===i){editIdx=-1;$('add-task').textContent='Добавить в список задач'}else if(editIdx>i)editIdx--;renderTasks();return}
+ const l=e.target.closest('[data-load]');if(l){editIdx=+l.dataset.load;cur={...tasks[editIdx]};delete cur.ex;$('task-name').value=cur.name;$('add-task').textContent='Сохранить оценку';paint();renderTasks();$('focus').scrollIntoView({behavior:'smooth'})}
+});
+$('add-task').addEventListener('click',()=>{
+ cur.name=$('task-name').value.trim();
+ if(!cur.name){$('task-name').focus();$('task-name').placeholder='Сначала назови задачу';return}
+ if(editIdx>=0){tasks[editIdx]={...cur};editIdx=-1}else tasks.push({...cur});
+ cur=blank();$('task-name').value='';$('add-task').textContent='Добавить в список задач';paint();renderTasks();
+});
+$('reset-list').addEventListener('click',()=>{tasks=EXAMPLES.map(t=>({...t,ex:true}));editIdx=-1;renderTasks()});
+$('copy-list').addEventListener('click',async()=>{
+ const txt=tasks.map(t=>({t,s:score(t).s})).sort((a,b)=>b.s-a.s).map((x,n)=>`${n+1}. [${x.s}] ${x.t.name} — ${verdict(x.s,x.t.deleg).tag}`).join('\n');
+ try{await navigator.clipboard.writeText('Золотые задачи ШИК\n'+txt);$('copy-msg').textContent='Список скопирован'}catch(e){$('copy-msg').textContent='Браузер не дал скопировать, выдели список вручную'}
+ setTimeout(()=>$('copy-msg').textContent='',2500);
+});
+
+/* ---------- Модалка ---------- */
+const m=$('how-modal');
+$('how-btn').addEventListener('click',()=>{m.classList.add('open');$('how-close').focus()});
+$('how-close').addEventListener('click',()=>m.classList.remove('open'));
+m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')m.classList.remove('open')});
+
+/* ---------- Scroll spy ---------- */
+const ind=$('current-slide-indicator'),pills=document.querySelectorAll('.nav-pill');
+const spy=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const n=en.target.dataset.slide;ind.textContent=n;
+ pills.forEach(p=>{const a=p.dataset.slide===n;p.classList.toggle('bg-ink',a);p.classList.toggle('text-white',a);p.classList.toggle('text-muted',!a)})}),{threshold:.28});
+document.querySelectorAll('section[data-slide]').forEach(s=>spy.observe(s));
+
+paint();renderTasks();
+}
+/* ---------- Транскрипт внутри файла ---------- */
+{const ov=document.getElementById('tr'),q=document.getElementById('tr-q'),cnt=document.getElementById('tr-cnt');
+const ps=[...ov.querySelectorAll('.para')];ps.forEach(p=>p.dataset.raw=p.querySelector('.tx').textContent);
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rx=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const open=()=>{ov.classList.add('open');document.body.classList.add('tr-lock');ov.scrollTop=0};
+const close=()=>{ov.classList.remove('open');document.body.classList.remove('tr-lock')};
+document.querySelectorAll('[data-tr]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();open()}));
+document.getElementById('tr-close').addEventListener('click',e=>{e.preventDefault();close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+q.addEventListener('input',()=>{const v=q.value.trim();let hits=0;
+ ps.forEach(p=>{const raw=p.dataset.raw,tx=p.querySelector('.tx');
+  if(!v){tx.textContent=raw;p.classList.remove('hide');return}
+  const m=raw.match(new RegExp(rx(v),'gi'));
+  if(m){hits+=m.length;p.classList.remove('hide');tx.innerHTML=esc(raw).replace(new RegExp(rx(esc(v)),'gi'),x=>'<mark>'+x+'</mark>')}
+  else{p.classList.add('hide');tx.textContent=raw}});
+ cnt.textContent=v?('Найдено: '+hits):''});
+}
+</script>
+
+</body>
+</html>
